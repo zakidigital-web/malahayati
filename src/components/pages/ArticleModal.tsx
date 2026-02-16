@@ -48,7 +48,7 @@ export default function ArticleModal({ articleId, isOpen, onClose }: ArticleModa
   const fetchArticle = async (id: string) => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/articles?id=${id}`)
+      const response = await fetch(`/api/articles?id=${id}`, { cache: 'no-store' })
       const result = await response.json()
       if (result.success) {
         setArticle(result.data)

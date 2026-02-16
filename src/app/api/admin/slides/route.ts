@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const slides = await db.slider.findMany({
       where: { active: true },
       orderBy: { order: 'asc' },
     })
-    return NextResponse.json({ success: true, data: slides })
+    return NextResponse.json({ success: true, data: slides }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'Failed' }, { status: 500 })
+    return NextResponse.json({ success: false, error: 'Failed' }, { status: 500, headers: { 'Cache-Control': 'no-store' } })
   }
 }
 

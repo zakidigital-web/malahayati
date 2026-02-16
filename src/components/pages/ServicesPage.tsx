@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -27,6 +27,20 @@ const mainServices = [
   { icon: HandshakeIcon, title: 'Mediasi & Negosiasi', desc: 'Penyelesaian sengketa secara damai.', features: ['Mediasi sengketa bisnis', 'Negosiasi kontrak', 'Penyelesaian sengketa keluarga', 'Mediasi ketenagakerjaan'] },
 ]
 
+const iconMap: Record<string, any> = {
+  MessageSquare,
+  Shield,
+  Gavel,
+  FileText,
+  HandshakeIcon,
+  Scale,
+  Briefcase,
+  Building2,
+  Home,
+  Car,
+  Heart,
+}
+
 const otherServices = [
   { icon: Building2, title: 'Hukum Korporasi', desc: 'Merger, akuisisi, regulasi' },
   { icon: Home, title: 'Hukum Properti', desc: 'Sengketa tanah, properti' },
@@ -38,12 +52,33 @@ const otherServices = [
 
 export default function ServicesPage() {
   const [expandedService, setExpandedService] = useState<number | null>(0)
+  const [servicesData, setServicesData] = useState(mainServices)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
   const [formData, setFormData] = useState({
     namaLengkap: '', nomorWhatsapp: '', email: '', jenisPermasalahan: '', pesan: '',
   })
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await fetch('/api/admin/services', { cache: 'no-store' })
+        const json = await res.json()
+        if (json?.success && Array.isArray(json.data) && json.data.length) {
+          const items = json.data
+            .filter((s: any) => s.active !== false)
+            .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+            .map((s: any) => {
+              const Icon = iconMap[s.icon] ?? MessageSquare
+              return { icon: Icon, title: s.title, desc: s.description, features: [] as string[] }
+            })
+          if (items.length) setServicesData(items)
+        }
+      } catch {}
+    }
+    fetchServices()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,7 +138,7 @@ export default function ServicesPage() {
           </div>
 
           <div className="space-y-3 sm:space-y-4">
-            {mainServices.map((service, index) => {
+            {servicesData.map((service, index) => {
               const Icon = service.icon
               const isExpanded = expandedService === index
               return (
@@ -136,7 +171,7 @@ export default function ServicesPage() {
                         <div>
                           <h4 className="font-semibold text-slate-900 text-sm sm:text-base mb-3 sm:mb-4">Cakupan Layanan</h4>
                           <ul className="space-y-2 sm:space-y-3">
-                            {service.features.map((f, i) => (
+                            {(service.features || []).map((f, i) => (
                               <li key={i} className="flex items-center gap-2 sm:gap-3">
                                 <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 flex-shrink-0" />
                                 <span className="text-slate-700 text-xs sm:text-sm lg:text-base">{f}</span>
@@ -146,7 +181,7 @@ export default function ServicesPage() {
                         </div>
                         <div className="flex flex-col justify-center items-center bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8">
                           <p className="text-slate-600 text-xs sm:text-sm lg:text-base mb-3 sm:mb-4 text-center">
-                            Butuh layanan ini? Konsultasikan permasalahan Anda.
+                            {service.desc || 'Butuh layanan ini? Konsultasikan permasalahan Anda.'}
                           </p>
                           <Button 
                             className="bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm"

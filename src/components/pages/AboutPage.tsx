@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -7,12 +8,15 @@ import {
   Scale, Users, CheckCircle2, Award, GraduationCap, Target, Heart, ArrowRight,
 } from 'lucide-react'
 
-const teamMembers = [
-  { name: 'Dr. H. Malahayati, S.H., M.H.', role: 'Pendiri & Managing Partner', desc: '20+ tahun pengalaman hukum.', edu: 'S3 Ilmu Hukum - UI' },
-  { name: 'Andi Wijaya, S.H., LL.M.', role: 'Senior Partner', desc: 'Spesialis hukum bisnis.', edu: 'LL.M. - Harvard' },
-  { name: 'Dewi Sartika, S.H., M.Kn.', role: 'Partner', desc: 'Ahli hukum keluarga.', edu: 'S2 Kenotariatan - UGM' },
-  { name: 'Rizki Pratama, S.H., M.H.', role: 'Senior Associate', desc: 'Fokus litigasi.', edu: 'S2 Ilmu Hukum - Unpad' },
-]
+interface TeamMember {
+  id?: string
+  name: string
+  role: string
+  description?: string
+  edu?: string
+  active?: boolean
+  order?: number
+}
 
 const values = [
   { icon: Award, title: 'Integritas', desc: 'Kejujuran dalam setiap tindakan.' },
@@ -30,6 +34,30 @@ const milestones = [
 ]
 
 export default function AboutPage() {
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
+    { name: 'Dr. H. Malahayati, S.H., M.H.', role: 'Pendiri & Managing Partner', description: '20+ tahun pengalaman hukum.', edu: 'S3 Ilmu Hukum - UI' },
+    { name: 'Andi Wijaya, S.H., LL.M.', role: 'Senior Partner', description: 'Spesialis hukum bisnis.', edu: 'LL.M. - Harvard' },
+    { name: 'Dewi Sartika, S.H., M.Kn.', role: 'Partner', description: 'Ahli hukum keluarga.', edu: 'S2 Kenotariatan - UGM' },
+    { name: 'Rizki Pratama, S.H., M.H.', role: 'Senior Associate', description: 'Fokus litigasi.', edu: 'S2 Ilmu Hukum - Unpad' },
+  ])
+
+  useEffect(() => {
+    const fetchTeam = async () => {
+      try {
+        const res = await fetch('/api/admin/team', { cache: 'no-store' })
+        const json = await res.json()
+        if (json?.success && Array.isArray(json.data) && json.data.length) {
+          const items = json.data
+            .filter((m: any) => m.active !== false)
+            .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+            .map((m: any) => ({ name: m.name, role: m.role, description: m.description, edu: m.education }))
+          if (items.length) setTeamMembers(items)
+        }
+      } catch {}
+    }
+    fetchTeam()
+  }, [])
+
   return (
     <div className="pt-16 lg:pt-20">
       {/* Hero */}
@@ -188,7 +216,7 @@ export default function AboutPage() {
                   </div>
                   <CardTitle className="text-xs sm:text-sm lg:text-lg mb-1">{member.name}</CardTitle>
                   <CardDescription className="text-amber-600 font-medium text-[10px] sm:text-xs lg:text-sm mb-2">{member.role}</CardDescription>
-                  <p className="text-slate-600 text-[10px] sm:text-xs lg:text-sm hidden sm:block">{member.desc}</p>
+                  <p className="text-slate-600 text-[10px] sm:text-xs lg:text-sm hidden sm:block">{member.description}</p>
                 </CardContent>
               </Card>
             ))}

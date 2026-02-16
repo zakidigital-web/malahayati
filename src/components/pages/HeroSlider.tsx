@@ -44,7 +44,7 @@ export default function HeroSlider({ onConsultClick }: HeroSliderProps) {
 
   const fetchSlides = async () => {
     try {
-      const response = await fetch('/api/admin/slides')
+      const response = await fetch('/api/admin/slides', { cache: 'no-store' })
       const result = await response.json()
       if (result.success && result.data.length > 0) {
         setSlides(result.data)

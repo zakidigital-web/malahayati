@@ -3,14 +3,15 @@
 import { Scale, MapPin, Phone, Mail, Clock, Facebook, Instagram, Linkedin, Twitter } from 'lucide-react'
 
 interface FooterProps {
-  onNavigate: (page: string) => void
+  onNavigate?: (page: string) => void
 }
 
 export default function Footer({ onNavigate }: FooterProps) {
   const currentYear = new Date().getFullYear()
 
   const handleNavigate = (page: string) => {
-    onNavigate(page)
+    const fn = onNavigate ?? (() => {})
+    fn(page)
     window.location.hash = page === 'home' ? '' : page
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }

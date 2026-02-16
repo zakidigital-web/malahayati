@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -10,17 +12,22 @@ export async function GET(request: NextRequest) {
     const featured = searchParams.get('featured')
 
     // Get single article by ID or slug
-    if (id || slug) {
-      const where = id ? { id } : { slug }
-      const article = await db.article.findUnique({
-        where,
-      })
+    if (id) {
+      const article = await db.article.findUnique({ where: { id } })
+      if (!article) {
+        return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404, headers: { 'Cache-Control': 'no-store' } })
+      }
+      return NextResponse.json({ success: true, data: article }, { headers: { 'Cache-Control': 'no-store' } })
+    }
+
+    if (slug) {
+      const article = await db.article.findUnique({ where: { slug } })
       
       if (!article) {
-        return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404 })
+        return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404, headers: { 'Cache-Control': 'no-store' } })
       }
       
-      return NextResponse.json({ success: true, data: article })
+      return NextResponse.json({ success: true, data: article }, { headers: { 'Cache-Control': 'no-store' } })
     }
 
     // Get list of articles
@@ -33,9 +40,9 @@ export async function GET(request: NextRequest) {
       take: limit,
     })
 
-    return NextResponse.json({ success: true, data: articles })
+    return NextResponse.json({ success: true, data: articles }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (error) {
     console.error('Error fetching articles:', error)
-    return NextResponse.json({ success: false, error: 'Failed to fetch articles' }, { status: 500 })
+    return NextResponse.json({ success: false, error: 'Failed to fetch articles' }, { status: 500, headers: { 'Cache-Control': 'no-store' } })
   }
 }

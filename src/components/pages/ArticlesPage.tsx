@@ -39,7 +39,7 @@ export default function ArticlesPage() {
 
   const fetchArticles = async () => {
     try {
-      const response = await fetch('/api/articles')
+      const response = await fetch('/api/articles', { cache: 'no-store' })
       const result = await response.json()
       if (result.success) setArticles(result.data)
     } catch (error) {

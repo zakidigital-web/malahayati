@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -40,14 +40,40 @@ const stats = [
   { number: '15+', label: 'Pengacara Profesional' },
 ]
 
-const testimonials = [
-  { name: 'Ahmad Santoso', role: 'Pengusaha', content: 'Pelayanan sangat profesional. Saya terbantu menyelesaikan sengketa bisnis dengan baik.', rating: 5 },
-  { name: 'Siti Rahayu', role: 'Manager HR', content: 'Tim advokat sangat sabar menjelaskan proses hukum yang rumit.', rating: 5 },
-  { name: 'Budi Prasetyo', role: 'Direktur PT', content: 'Penyusunan kontrak kerja sama sangat detail.', rating: 5 },
-]
+interface Testimonial {
+  id?: string
+  name: string
+  role: string
+  content: string
+  rating: number
+  active?: boolean
+  order?: number
+}
 
 export default function HomePage({ onNavigate }: HomePageProps) {
   const [showConsultDialog, setShowConsultDialog] = useState(false)
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([
+    { name: 'Ahmad Santoso', role: 'Pengusaha', content: 'Pelayanan sangat profesional. Saya terbantu menyelesaikan sengketa bisnis dengan baik.', rating: 5 },
+    { name: 'Siti Rahayu', role: 'Manager HR', content: 'Tim advokat sangat sabar menjelaskan proses hukum yang rumit.', rating: 5 },
+    { name: 'Budi Prasetyo', role: 'Direktur PT', content: 'Penyusunan kontrak kerja sama sangat detail.', rating: 5 },
+  ])
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const res = await fetch('/api/admin/testimonials', { cache: 'no-store' })
+        const json = await res.json()
+        if (json?.success && Array.isArray(json.data) && json.data.length) {
+          const items = json.data
+            .filter((t: any) => t.active !== false)
+            .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+            .map((t: any) => ({ name: t.name, role: t.role, content: t.content, rating: t.rating ?? 5 }))
+          if (items.length) setTestimonials(items)
+        }
+      } catch {}
+    }
+    fetchTestimonials()
+  }, [])
 
   const handleNavigate = (page: string) => {
     onNavigate(page)

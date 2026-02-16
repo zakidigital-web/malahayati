@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const testimonials = await db.testimonial.findMany({ orderBy: { order: 'asc' } })
-    return NextResponse.json({ success: true, data: testimonials })
+    return NextResponse.json({ success: true, data: testimonials }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'Failed' }, { status: 500 })
+    return NextResponse.json({ success: false, error: 'Failed' }, { status: 500, headers: { 'Cache-Control': 'no-store' } })
   }
 }
 
