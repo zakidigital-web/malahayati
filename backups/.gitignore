@@ -1,0 +1,5 @@
+# Ignore all backup files
+*.db
+
+# But keep this file
+!.gitignore
