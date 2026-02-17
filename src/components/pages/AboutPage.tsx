@@ -26,11 +26,9 @@ const values = [
 ]
 
 const milestones = [
-  { year: '2005', title: 'Pendirian', desc: 'Kantor didirikan' },
-  { year: '2010', title: 'Ekspansi', desc: 'Partner baru' },
-  { year: '2015', title: 'Penghargaan', desc: 'Best Law Firm' },
-  { year: '2020', title: 'Digital', desc: 'Konsultasi online' },
-  { year: '2024', title: 'Milestone', desc: '5000+ klien' },
+  { year: '2022', title: 'Pendirian', desc: 'YKBH Malahayati didirikan' },
+  { year: '2023', title: 'Operasional', desc: 'Mulai melayani masyarakat' },
+  { year: '2025', title: 'Capaian', desc: '3 tahun beroperasi di Banyuwangi' },
 ]
 
 export default function AboutPage() {
@@ -71,11 +69,11 @@ export default function AboutPage() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
               Mengenal Lebih Dekat
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">
-                Lembaga Hukum Malahayati
+                YKBH Malahayati
               </span>
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-slate-300 leading-relaxed">
-              Didirikan untuk memberikan akses keadilan yang setara bagi masyarakat Indonesia.
+              YKBH Malahayati didirikan pada tahun 2022 dengan visi memberikan akses keadilan yang setara bagi seluruh lapisan masyarakat. Selama 3 tahun beroperasi, kami telah menjadi mitra terpercaya dalam penyelesaian berbagai permasalahan hukum di wilayah Banyuwangi dan sekitarnya.
             </p>
           </div>
         </div>
@@ -90,10 +88,10 @@ export default function AboutPage() {
                 Sejarah Kami
               </p>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-4 sm:mb-6">
-                Perjalanan Dua Dekade
+                Perjalanan Kami
               </h2>
               <p className="text-slate-600 text-sm sm:text-base lg:text-lg leading-relaxed mb-4 sm:mb-6">
-                Sejak 2005, kami telah berkomitmen memberikan layanan hukum berkualitas tinggi.
+                Sejak 2022, kami berkomitmen menjadi mitra terpercaya dalam penyelesaian permasalahan hukum, khususnya bagi masyarakat Banyuwangi dan sekitarnya.
               </p>
               <Button className="bg-slate-900 hover:bg-slate-800">
                 Hubungi Kami <ArrowRight className="ml-2 h-4 w-4" />
