@@ -293,7 +293,7 @@ export default function ContactPage() {
               <div className="h-96 bg-gradient-to-br from-slate-200 to-slate-100 flex items-center justify-center">
                 <div className="text-center">
                   <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
-                  <p className="text-slate-600 font-medium">Jl. Malahayati No. 123, Jakarta Selatan</p>
+                  <p className="text-slate-600 font-medium">Perumahan Candra Kirana Asri Blok C1 Kertosari</p>
                   <p className="text-sm text-slate-500 mt-2">Peta lokasi akan ditampilkan di sini</p>
                 </div>
               </div>
