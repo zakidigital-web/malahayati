@@ -34,6 +34,27 @@ export default function AdminTeamPage() {
   const [formData, setFormData] = useState({ name: '', role: '', description: '', education: '', imageUrl: '' as string | undefined, order: 0, active: true })
   const [uploading, setUploading] = useState(false)
 
+  const normalizeImageUrl = (url: string) => {
+    if (!url) return url
+    try {
+      const u = new URL(url)
+      const host = u.hostname
+      if (host.includes('drive.google.com')) {
+        if (u.pathname.includes('/file/d/')) {
+          const parts = u.pathname.split('/')
+          const idIndex = parts.findIndex(p => p === 'd') + 1
+          const fileId = parts[idIndex]
+          if (fileId) return `https://drive.google.com/uc?export=view&id=${fileId}`
+        }
+        const idParam = u.searchParams.get('id')
+        if (idParam) return `https://drive.google.com/uc?export=view&id=${idParam}`
+      }
+      return url
+    } catch {
+      return url
+    }
+  }
+
   useEffect(() => { fetchMembers() }, [])
 
   const fetchMembers = async () => {
@@ -143,6 +164,22 @@ export default function AdminTeamPage() {
             <div className="space-y-2"><Label>Jabatan</Label><Input placeholder="Senior Partner" value={formData.role} onChange={(e) => setFormData(p => ({ ...p, role: e.target.value }))} required /></div>
             <div className="space-y-2"><Label>Deskripsi</Label><Textarea placeholder="Deskripsi singkat..." rows={2} value={formData.description} onChange={(e) => setFormData(p => ({ ...p, description: e.target.value }))} required /></div>
             <div className="space-y-2"><Label>Pendidikan</Label><Input placeholder="S3 Ilmu Hukum - UI" value={formData.education} onChange={(e) => setFormData(p => ({ ...p, education: e.target.value }))} required /></div>
+            <div className="space-y-2">
+              <Label>URL Gambar (opsional)</Label>
+              <Input
+                placeholder="Tempel URL gambar (mendukung Google Drive publik)"
+                value={formData.imageUrl || ''}
+                onChange={(e) => setFormData(p => ({ ...p, imageUrl: e.target.value }))}
+                onBlur={(e) => {
+                  const normalized = normalizeImageUrl(e.target.value.trim())
+                  if (normalized !== e.target.value.trim()) {
+                    setFormData(p => ({ ...p, imageUrl: normalized }))
+                    toast({ title: 'URL diubah', description: 'Link Google Drive diubah ke link langsung' })
+                  }
+                }}
+              />
+              <p className="text-xs text-slate-500">Contoh Google Drive: https://drive.google.com/file/d/FILE_ID/view akan otomatis diubah.</p>
+            </div>
             <div className="space-y-2">
               <Label>Foto (opsional)</Label>
               <div className="flex items-center gap-4">
