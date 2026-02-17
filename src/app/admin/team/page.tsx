@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
-import { Plus, Edit, Trash2, Users } from 'lucide-react'
+import { Plus, Edit, Trash2, Users, Image as ImageIcon, Loader2, X } from 'lucide-react'
 
 interface TeamMember {
   id: string
@@ -18,6 +18,7 @@ interface TeamMember {
   role: string
   description: string
   education: string
+  imageUrl?: string | null
   order: number
   active: boolean
 }
@@ -30,7 +31,8 @@ export default function AdminTeamPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
 
-  const [formData, setFormData] = useState({ name: '', role: '', description: '', education: '', order: 0, active: true })
+  const [formData, setFormData] = useState({ name: '', role: '', description: '', education: '', imageUrl: '' as string | undefined, order: 0, active: true })
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => { fetchMembers() }, [])
 
@@ -48,13 +50,13 @@ export default function AdminTeamPage() {
 
   const openCreateDialog = () => {
     setEditingMember(null)
-    setFormData({ name: '', role: '', description: '', education: '', order: members.length, active: true })
+    setFormData({ name: '', role: '', description: '', education: '', imageUrl: '', order: members.length, active: true })
     setIsDialogOpen(true)
   }
 
   const openEditDialog = (member: TeamMember) => {
     setEditingMember(member)
-    setFormData({ name: member.name, role: member.role, description: member.description, education: member.education, order: member.order, active: member.active })
+    setFormData({ name: member.name, role: member.role, description: member.description, education: member.education, imageUrl: member.imageUrl || '', order: member.order, active: member.active })
     setIsDialogOpen(true)
   }
 
@@ -111,9 +113,13 @@ export default function AdminTeamPage() {
             <Card key={m.id} className={!m.active ? 'opacity-60' : ''}>
               <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white font-bold">
-                    {m.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
-                  </div>
+                  {m.imageUrl ? (
+                    <img src={m.imageUrl} alt={m.name} className="w-12 h-12 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white font-bold">
+                      {m.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                    </div>
+                  )}
                   <div className="flex gap-1">
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(m)}><Edit className="h-4 w-4" /></Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500" onClick={() => handleDelete(m.id)}><Trash2 className="h-4 w-4" /></Button>
@@ -137,6 +143,51 @@ export default function AdminTeamPage() {
             <div className="space-y-2"><Label>Jabatan</Label><Input placeholder="Senior Partner" value={formData.role} onChange={(e) => setFormData(p => ({ ...p, role: e.target.value }))} required /></div>
             <div className="space-y-2"><Label>Deskripsi</Label><Textarea placeholder="Deskripsi singkat..." rows={2} value={formData.description} onChange={(e) => setFormData(p => ({ ...p, description: e.target.value }))} required /></div>
             <div className="space-y-2"><Label>Pendidikan</Label><Input placeholder="S3 Ilmu Hukum - UI" value={formData.education} onChange={(e) => setFormData(p => ({ ...p, education: e.target.value }))} required /></div>
+            <div className="space-y-2">
+              <Label>Foto (opsional)</Label>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
+                  {formData.imageUrl ? (
+                    <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <ImageIcon className="h-6 w-6 text-slate-400" />
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <input id="team-photo-input" type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                    const file = e.target.files?.[0]
+                    if (!file) return
+                    setUploading(true)
+                    try {
+                      const fd = new FormData()
+                      fd.append('file', file)
+                      fd.append('folder', 'team')
+                      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+                      const json = await res.json()
+                      if (json?.success && json.url) {
+                        setFormData(p => ({ ...p, imageUrl: json.url }))
+                        toast({ title: 'Foto terunggah', description: 'Foto berhasil diunggah' })
+                      } else {
+                        throw new Error(json?.error || 'Upload gagal')
+                      }
+                    } catch {
+                      toast({ title: 'Gagal', description: 'Tidak dapat mengunggah foto', variant: 'destructive' })
+                    } finally {
+                      setUploading(false)
+                      e.currentTarget.value = ''
+                    }
+                  }} />
+                  <Button type="button" variant="outline" onClick={() => document.getElementById('team-photo-input')?.click()} disabled={uploading}>
+                    {uploading ? (<><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Mengunggah...</>) : (<>Unggah Foto</>)}
+                  </Button>
+                  {formData.imageUrl && (
+                    <Button type="button" variant="ghost" onClick={() => setFormData(p => ({ ...p, imageUrl: '' }))} title="Hapus foto">
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
             <div className="flex items-center gap-4">
               <div className="space-y-2 flex-1"><Label>Urutan</Label><Input type="number" value={formData.order} onChange={(e) => setFormData(p => ({ ...p, order: parseInt(e.target.value) || 0 }))} /></div>
               <label className="flex items-center gap-2 pt-6"><input type="checkbox" checked={formData.active} onChange={(e) => setFormData(p => ({ ...p, active: e.target.checked }))} className="rounded" /><span className="text-sm">Aktif</span></label>

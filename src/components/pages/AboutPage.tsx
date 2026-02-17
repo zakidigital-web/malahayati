@@ -14,6 +14,7 @@ interface TeamMember {
   role: string
   description?: string
   education?: string
+  imageUrl?: string | null
   active?: boolean
   order?: number
 }
@@ -53,7 +54,7 @@ export default function AboutPage() {
           const items = json.data
             .filter((m: any) => m.active !== false)
             .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
-            .map((m: any) => ({ name: m.name, role: m.role, description: m.description, education: m.education }))
+            .map((m: any) => ({ name: m.name, role: m.role, description: m.description, education: m.education, imageUrl: m.imageUrl || null }))
           if (items.length) setTeamMembers(items)
         }
       } catch {}
@@ -240,9 +241,13 @@ export default function AboutPage() {
             {teamMembers.map((member, i) => (
               <Card key={i} className="border-0 bg-slate-50 hover:shadow-lg transition-shadow group text-center">
                 <CardContent className="p-3 sm:p-4 lg:p-6">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white text-lg sm:text-xl lg:text-2xl font-bold group-hover:scale-105 transition-transform">
-                    {member.name.split(' ').slice(0, 2).map(n => n[0]).join('')}
-                  </div>
+                  {member.imageUrl ? (
+                    <img src={member.imageUrl} alt={member.name} className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full object-cover mx-auto mb-3 sm:mb-4" />
+                  ) : (
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white text-lg sm:text-xl lg:text-2xl font-bold group-hover:scale-105 transition-transform">
+                      {member.name.split(' ').slice(0, 2).map(n => n[0]).join('')}
+                    </div>
+                  )}
                   <CardTitle className="text-xs sm:text-sm lg:text-lg mb-1">{member.name}</CardTitle>
                   <CardDescription className="text-amber-600 font-medium text-[10px] sm:text-xs lg:text-sm mb-2">{member.role}</CardDescription>
                   <p className="text-slate-600 text-[10px] sm:text-xs lg:text-sm hidden sm:block">{member.description}</p>

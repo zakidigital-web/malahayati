@@ -18,14 +18,14 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, role, description, education, order, active } = body
+    const { name, role, description, education, imageUrl, order, active } = body
 
     if (!name || !role || !description || !education) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
     }
 
     const member = await db.teamMember.create({
-      data: { name, role, description, education, order: order || 0, active: active !== false },
+      data: { name, role, description, education, imageUrl: imageUrl || null, order: order || 0, active: active !== false },
     })
 
     return NextResponse.json({ success: true, data: member })
@@ -46,7 +46,15 @@ export async function PUT(request: NextRequest) {
 
     const member = await db.teamMember.update({
       where: { id },
-      data,
+      data: {
+        name: data.name,
+        role: data.role,
+        description: data.description,
+        education: data.education,
+        imageUrl: data.imageUrl ?? undefined,
+        order: typeof data.order === 'number' ? data.order : undefined,
+        active: typeof data.active === 'boolean' ? data.active : undefined,
+      },
     })
 
     return NextResponse.json({ success: true, data: member })
@@ -86,6 +94,7 @@ export async function PATCH(request: NextRequest) {
       role: String(m.role).trim(),
       description: m.description ? String(m.description) : 'Pengurus Yayasan',
       education: m.education ? String(m.education) : '-',
+      imageUrl: m.imageUrl ? String(m.imageUrl) : null,
       order: Number.isFinite(m.order) ? m.order : idx,
       active: m.active !== false,
     }))
