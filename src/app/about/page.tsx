@@ -13,33 +13,9 @@ import {
 } from 'lucide-react'
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
+import { db } from '@/lib/db'
 
-const teamMembers = [
-  {
-    name: 'Dr. H. Malahayati, S.H., M.H.',
-    role: 'Pendiri & Managing Partner',
-    description: 'Berpengalaman lebih dari 20 tahun dalam praktik hukum dengan spesialisasi hukum pidana dan perdata.',
-    education: 'S3 Ilmu Hukum - Universitas Indonesia',
-  },
-  {
-    name: 'Andi Wijaya, S.H., LL.M.',
-    role: 'Senior Partner',
-    description: 'Spesialis hukum bisnis dan korporasi dengan pengalaman menangani berbagai merger dan akuisisi.',
-    education: 'LL.M. - Harvard Law School',
-  },
-  {
-    name: 'Dewi Sartika, S.H., M.Kn.',
-    role: 'Partner',
-    description: 'Ahli hukum keluarga dan waris dengan pendekatan yang empatik dan solutif.',
-    education: 'S2 Kenotariatan - Universitas Gadjah Mada',
-  },
-  {
-    name: 'Rizki Pratama, S.H., M.H.',
-    role: 'Associate',
-    description: 'Fokus pada penyelesaian sengketa dan litigasi dengan rekam jejak yang solid.',
-    education: 'S2 Ilmu Hukum - Universitas Padjadjaran',
-  },
-]
+export const dynamic = 'force-dynamic'
 
 const values = [
   {
@@ -66,33 +42,37 @@ const values = [
 
 const milestones = [
   {
-    year: '2005',
-    title: 'Pendirian Kantor',
-    description: 'Lembaga Hukum Malahayati didirikan dengan visi memberikan layanan hukum berkualitas.',
+    year: '2022',
+    title: 'Pendirian YKBH Malahayati',
+    description: 'Didirikan dengan visi memberikan akses keadilan yang setara bagi seluruh lapisan masyarakat.',
   },
   {
-    year: '2010',
-    title: 'Ekspansi Tim',
-    description: 'Menambah 3 partner baru untuk memperluas layanan hukum yang diberikan.',
+    year: '2023',
+    title: 'Mulai Operasional',
+    description: 'Menjadi mitra terpercaya dalam penyelesaian berbagai permasalahan hukum di Banyuwangi dan sekitarnya.',
   },
   {
-    year: '2015',
-    title: 'Penghargaan Pertama',
-    description: 'Mendapatkan penghargaan sebagai Lembaga Hukum Terbaik di Jakarta Selatan.',
-  },
-  {
-    year: '2020',
-    title: 'Digitalisasi Layanan',
-    description: 'Meluncurkan layanan konsultasi online untuk menjangkau lebih banyak klien.',
-  },
-  {
-    year: '2024',
-    title: '5000+ Klien Terlayani',
-    description: 'Mencapai milestone 5000 klien yang telah kami layani dengan baik.',
+    year: '2025',
+    title: '3 Tahun Beroperasi',
+    description: 'Terus memperluas layanan dan kemitraan untuk mendampingi masyarakat di wilayah Banyuwangi.',
   },
 ]
 
-export default function AboutPage() {
+const organization = [
+  { role: 'Penasehat', name: 'Slamet Yadi' },
+  { role: 'Pengawas', name: 'Heru Setiawan, S.Pd.' },
+  { role: 'Ketua', name: 'Firman Febri Cahyana, S.H., C.MSP' },
+  { role: 'Wakil Ketua', name: 'Moh. Rifki, S.H.' },
+  { role: 'Sekretaris', name: 'Vivi Anjarwati, S.Pd.' },
+  { role: 'Bendahara', name: 'Yasmin Nanda Aditama, S.H.' },
+  { role: 'Wakil Bendahara', name: 'Wiyanda Nindi Aditama, A.Md.' },
+]
+
+export default async function AboutPage() {
+  const members = await db.teamMember.findMany({
+    where: { active: true },
+    orderBy: { order: 'asc' },
+  })
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -109,10 +89,10 @@ export default function AboutPage() {
             <div className="max-w-3xl">
               <span className="text-sm font-semibold text-primary tracking-wider uppercase">Tentang Kami</span>
               <h1 className="text-4xl sm:text-5xl font-bold mt-4 mb-6">
-                Mengenal Lebih Dekat Lembaga Hukum Malahayati
+                Mengenal Lebih Dekat YKBH Malahayati
               </h1>
               <p className="text-xl text-slate-300 leading-relaxed">
-                Didirikan dengan semangat untuk memberikan akses keadilan yang setara bagi seluruh masyarakat Indonesia.
+                YKBH Malahayati didirikan pada tahun 2022 dengan visi memberikan akses keadilan yang setara bagi seluruh lapisan masyarakat.
               </p>
             </div>
           </div>
@@ -126,9 +106,9 @@ export default function AboutPage() {
                 <span className="text-sm font-semibold text-primary tracking-wider uppercase">Sejarah Kami</span>
                 <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-6">Perjalanan Kami</h2>
                 <p className="text-slate-600 text-lg leading-relaxed">
-                  Lembaga Hukum Malahayati didirikan pada tahun 2005 dengan satu tujuan utama:
-                  memberikan layanan hukum yang berkualitas, mudah diakses, dan terjangkau oleh
-                  seluruh lapisan masyarakat.
+                  YKBH Malahayati berdiri pada tahun 2022 dan selama 3 tahun beroperasi telah menjadi mitra terpercaya
+                  dalam penyelesaian berbagai permasalahan hukum di wilayah Banyuwangi dan sekitarnya. Kami hadir untuk
+                  memastikan layanan hukum yang berkualitas, mudah diakses, dan berpihak pada keadilan bagi semua.
                 </p>
               </div>
 
@@ -213,6 +193,31 @@ export default function AboutPage() {
           </div>
         </section>
 
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <span className="text-sm font-semibold text-primary tracking-wider uppercase">Struktur Organisasi</span>
+              <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4">Yayasan Konsultasi dan Bantuan Hukum Malahayati</h2>
+              <p className="text-slate-600 max-w-2xl mx-auto text-lg">
+                Susunan pengurus inti yayasan.
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {organization.map((item, i) => (
+                <Card key={i} className="border-0 shadow-lg">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Users className="h-5 w-5 text-primary flex-shrink-0" />
+                      <div className="text-primary font-semibold">{item.role}</div>
+                    </div>
+                    <div className="text-slate-900 text-lg font-bold">{item.name}</div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Values */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -256,13 +261,13 @@ export default function AboutPage() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-              {teamMembers.map((member, index) => (
+              {members.map((member, index) => (
                 <Card key={index} className="group border-0 shadow-lg overflow-hidden">
                   <CardContent className="p-0">
                     <div className="h-48 bg-gradient-to-br from-slate-200 to-slate-100 flex items-center justify-center">
                       <div className="w-24 h-24 rounded-full bg-slate-900 flex items-center justify-center group-hover:bg-primary transition-colors">
                         <span className="text-white font-bold text-2xl">
-                          {member.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                          {member.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('')}
                         </span>
                       </div>
                     </div>
@@ -272,7 +277,7 @@ export default function AboutPage() {
                       <p className="text-slate-600 text-sm mb-4">{member.description}</p>
                       <div className="flex items-center gap-2 text-xs text-slate-500">
                         <GraduationCap className="h-4 w-4" />
-                        <span>{member.education}</span>
+                        <span>{(member as any).education}</span>
                       </div>
                     </div>
                   </CardContent>
