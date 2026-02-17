@@ -11,9 +11,9 @@ import { useToast } from '@/hooks/use-toast'
 import { MapPin, Phone, Mail, Clock, Send, MessageSquare, Facebook, Instagram, Linkedin } from 'lucide-react'
 
 const contactInfo = [
-  { icon: MapPin, title: 'Alamat', lines: ['Jl. Malahayati No. 123', 'Jakarta Selatan 12345'] },
+  { icon: MapPin, title: 'Alamat', lines: ['Perumahan Candra Kirana Asri Blok C1 Kertosari'] },
   { icon: Phone, title: 'Telepon', lines: ['+62 21 1234 5678', '+62 812 3456 7890'] },
-  { icon: Mail, title: 'Email', lines: ['info@malahayati-law.id', 'konsultasi@malahayati-law.id'] },
+  { icon: Mail, title: 'Email', lines: ['ykbhmalahayati@gmail.com'] },
   { icon: Clock, title: 'Jam Operasional', lines: ['Senin – Jumat', '08.00 – 17.00 WIB'] },
 ]
 
@@ -181,7 +181,7 @@ export default function ContactPage() {
         <div className="h-48 sm:h-64 lg:h-80 flex items-center justify-center">
           <div className="text-center text-slate-400">
             <MapPin className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-2 sm:mb-3" />
-            <p className="text-sm sm:text-base">Jl. Malahayati No. 123, Jakarta Selatan</p>
+            <p className="text-sm sm:text-base">Perumahan Candra Kirana Asri Blok C1 Kertosari</p>
             <p className="text-xs sm:text-sm">(Peta Lokasi)</p>
           </div>
         </div>

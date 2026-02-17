@@ -15,17 +15,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Lembaga Hukum Malahayati | Solusi Hukum Profesional dan Terpercaya",
-    template: "%s | Lembaga Hukum Malahayati",
+    default: "Lembaga Bantuan Hukum Malahayati | Solusi Hukum Profesional dan Terpercaya",
+    template: "%s | Lembaga Bantuan Hukum Malahayati",
   },
-  description: "Lembaga hukum yang memberikan layanan konsultasi dan pendampingan hukum secara profesional, transparan, dan terpercaya untuk individu maupun perusahaan.",
-  keywords: ["Lembaga Hukum", "Konsultasi Hukum", "Pendampingan Hukum", "Pengacara", "Advokat", "Malahayati", "Jakarta"],
-  authors: [{ name: "Lembaga Hukum Malahayati" }],
+  description: "Lembaga bantuan hukum yang memberikan layanan konsultasi dan pendampingan hukum secara profesional, transparan, dan terpercaya untuk individu maupun perusahaan.",
+  keywords: ["Lembaga Bantuan Hukum", "Konsultasi Hukum", "Pendampingan Hukum", "Pengacara", "Advokat", "Malahayati", "Jakarta"],
+  authors: [{ name: "Lembaga Bantuan Hukum Malahayati" }],
   icons: {
     icon: "/logo.svg",
   },
   openGraph: {
-    title: "Lembaga Hukum Malahayati",
+    title: "Lembaga Bantuan Hukum Malahayati",
     description: "Solusi Hukum Profesional dan Terpercaya",
     type: "website",
     locale: "id_ID",

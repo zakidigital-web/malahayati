@@ -99,7 +99,7 @@ export default function AdminSidebar({ username }: AdminSidebarProps) {
           <Scale className="h-8 w-8 text-amber-500" />
           <div>
             <h1 className="font-bold text-lg">Admin Panel</h1>
-            <p className="text-xs text-slate-400">Lembaga Hukum Malahayati</p>
+            <p className="text-xs text-slate-400">Lembaga Bantuan Hukum Malahayati</p>
           </div>
         </div>
 

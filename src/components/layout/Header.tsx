@@ -129,7 +129,7 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
               <Scale className={`h-8 w-8 transition-colors ${isScrolled ? 'text-slate-900' : 'text-white'}`} />
               <div className="text-left">
                 <h1 className={`text-lg font-semibold tracking-tight transition-colors ${isScrolled ? 'text-slate-900' : 'text-white'}`}>
-                  Lembaga Hukum Malahayati
+                  Lembaga Bantuan Hukum Malahayati
                 </h1>
                 <p className={`text-xs tracking-wider uppercase transition-colors ${isScrolled ? 'text-slate-500' : 'text-white/70'}`}>
                   Solusi Hukum Profesional
@@ -188,7 +188,7 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
               <Scale className={`h-7 w-7 transition-colors ${isScrolled ? 'text-amber-500' : 'text-white'}`} />
               <div>
                 <h1 className={`text-sm font-semibold transition-colors ${isScrolled ? 'text-slate-900' : 'text-white'}`}>
-                  Lembaga Hukum Malahayati
+                  Lembaga Bantuan Hukum Malahayati
                 </h1>
               </div>
             </button>

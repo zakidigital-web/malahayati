@@ -66,7 +66,7 @@ export default function AdminLoginPage() {
           <div>
             <CardTitle className="text-2xl font-bold text-white">Admin Login</CardTitle>
             <CardDescription className="text-slate-400 mt-2">
-              Lembaga Hukum Malahayati
+              Lembaga Bantuan Hukum Malahayati
             </CardDescription>
           </div>
         </CardHeader>

@@ -295,7 +295,7 @@ Penyelesaian sengketa tanah memerlukan pemahaman hukum yang baik dan bukti-bukti
     {
       name: 'Budi Prasetyo',
       role: 'Direktur PT. Maju Jaya',
-      content: 'Lembaga Hukum Malahayati membantu perusahaan kami dalam penyusunan kontrak dan perjanjian kerja sama dengan sangat baik.',
+      content: 'Lembaga Bantuan Hukum Malahayati membantu perusahaan kami dalam penyusunan kontrak dan perjanjian kerja sama dengan sangat baik.',
       rating: 5,
       order: 2,
     },

@@ -131,7 +131,7 @@ export default function Navigation() {
               <Scale className="h-7 w-7 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-900">Lembaga Hukum Malahayati</h1>
+              <h1 className="text-xl font-bold text-slate-900">Lembaga Bantuan Hukum Malahayati</h1>
               <p className="text-xs text-slate-500 tracking-wide">
                 SOLUSI HUKUM PROFESIONAL DAN TERPERCAYA
               </p>

@@ -26,7 +26,7 @@ export default function Footer({ onNavigate }: FooterProps) {
             <button onClick={() => handleNavigate('home')} className="flex items-center gap-3 mb-6 group">
               <Scale className="h-8 w-8 text-amber-400" />
               <div className="text-left">
-                <h3 className="text-lg font-semibold">Lembaga Hukum Malahayati</h3>
+                <h3 className="text-lg font-semibold">Lembaga Bantuan Hukum Malahayati</h3>
                 <p className="text-xs text-slate-400 tracking-wider uppercase">
                   Solusi Hukum Profesional
                 </p>
@@ -89,7 +89,7 @@ export default function Footer({ onNavigate }: FooterProps) {
             <ul className="space-y-4 text-slate-400">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-amber-400 mt-0.5 flex-shrink-0" />
-                <span>Jl. Malahayati No. 123, Jakarta Selatan, DKI Jakarta 12345</span>
+                <span>Perumahan Candra Kirana Asri Blok C1 Kertosari</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-amber-400 flex-shrink-0" />
@@ -97,7 +97,7 @@ export default function Footer({ onNavigate }: FooterProps) {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-amber-400 flex-shrink-0" />
-                <span>info@malahayati-law.id</span>
+                <span>ykbhmalahayati@gmail.com</span>
               </li>
               <li className="flex items-center gap-3">
                 <Clock className="h-5 w-5 text-amber-400 flex-shrink-0" />
@@ -112,7 +112,7 @@ export default function Footer({ onNavigate }: FooterProps) {
       <div className="border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-            <p>© {currentYear} Lembaga Hukum Malahayati. All rights reserved.</p>
+            <p>© {currentYear} Lembaga Bantuan Hukum Malahayati. All rights reserved.</p>
             <div className="flex gap-6">
               <a href="#" className="hover:text-slate-300 transition-colors">Kebijakan Privasi</a>
               <a href="#" className="hover:text-slate-300 transition-colors">Syarat & Ketentuan</a>

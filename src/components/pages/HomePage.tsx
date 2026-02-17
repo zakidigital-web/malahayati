@@ -115,7 +115,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                 <span className="text-amber-600"> Kepentingan Klien</span>
               </h2>
               <p className="text-slate-600 text-sm sm:text-base lg:text-lg leading-relaxed mb-4 sm:mb-6">
-                Lembaga Hukum Malahayati didirikan untuk memberikan akses keadilan 
+                Lembaga Bantuan Hukum Malahayati didirikan untuk memberikan akses keadilan 
                 yang setara bagi seluruh masyarakat Indonesia.
               </p>
               <div className="space-y-2 sm:space-y-4 mb-6 sm:mb-8">
@@ -304,9 +304,9 @@ export default function HomePage({ onNavigate }: HomePageProps) {
               </h2>
               <div className="space-y-4 sm:space-y-6">
                 {[
-                  { icon: Scale, label: 'Alamat', value: 'Jl. Malahayati No. 123, Jakarta' },
+                  { icon: Scale, label: 'Alamat', value: 'Perumahan Candra Kirana Asri Blok C1 Kertosari' },
                   { icon: MessageSquare, label: 'Telepon', value: '+62 21 1234 5678' },
-                  { icon: FileText, label: 'Email', value: 'info@malahayati-law.id' },
+                  { icon: FileText, label: 'Email', value: 'ykbhmalahayati@gmail.com' },
                   { icon: Clock, label: 'Jam Kerja', value: 'Senin-Jumat, 08.00-17.00' },
                 ].map((item, i) => {
                   const Icon = item.icon

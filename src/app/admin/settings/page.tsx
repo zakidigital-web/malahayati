@@ -31,12 +31,12 @@ export default function AdminSettingsPage() {
   const [changingPassword, setChangingPassword] = useState(false)
 
   const defaultSettings = {
-    site_name: 'Lembaga Hukum Malahayati',
+    site_name: 'Lembaga Bantuan Hukum Malahayati',
     site_tagline: 'Solusi Hukum Profesional dan Terpercaya',
     phone: '+62 21 1234 5678',
     whatsapp: '+62 812 3456 7890',
-    email: 'info@malahayati-law.id',
-    address: 'Jl. Malahayati No. 123, Jakarta Selatan, DKI Jakarta 12345',
+    email: 'ykbhmalahayati@gmail.com',
+    address: 'Perumahan Candra Kirana Asri Blok C1 Kertosari',
     hours: 'Senin – Jumat, 08.00 – 17.00 WIB',
     hero_title: 'Pendampingan Hukum Profesional & Terpercaya',
     hero_description: 'Kami memberikan solusi hukum yang komprehensif untuk individu dan perusahaan.',

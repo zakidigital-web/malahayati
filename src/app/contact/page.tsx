@@ -32,7 +32,7 @@ const contactInfo = [
   {
     icon: MapPin,
     title: 'Alamat Kantor',
-    content: ['Jl. Malahayati No. 123', 'Jakarta Selatan, DKI Jakarta', 'Indonesia 12345'],
+    content: ['Perumahan Candra Kirana Asri Blok C1 Kertosari'],
     action: null,
   },
   {
@@ -44,8 +44,8 @@ const contactInfo = [
   {
     icon: Mail,
     title: 'Email',
-    content: ['info@malahayati-law.id', 'konsultasi@malahayati-law.id'],
-    action: { label: 'Kirim Email', href: 'mailto:info@malahayati-law.id' },
+    content: ['ykbhmalahayati@gmail.com'],
+    action: { label: 'Kirim Email', href: 'mailto:ykbhmalahayati@gmail.com' },
   },
   {
     icon: Clock,
