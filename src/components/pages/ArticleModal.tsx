@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import {
   Dialog,
   DialogContent,
@@ -68,15 +70,6 @@ export default function ArticleModal({ articleId, isOpen, onClose }: ArticleModa
     })
   }
 
-  const formatContent = (content: string) => {
-    // Split by double newlines to create paragraphs
-    return content.split('\n\n').map((paragraph, index) => (
-      <p key={index} className="mb-4 text-slate-600 leading-relaxed">
-        {paragraph}
-      </p>
-    ))
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -126,7 +119,9 @@ export default function ArticleModal({ articleId, isOpen, onClose }: ArticleModa
 
             {/* Content */}
             <div className="prose prose-slate max-w-none">
-              {formatContent(article.content)}
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {article.content}
+              </ReactMarkdown>
             </div>
 
             {/* Footer */}

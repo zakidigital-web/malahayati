@@ -23,6 +23,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
 import { Plus, Search, Edit, Trash2, Eye, Star, FileText } from 'lucide-react'
+import '@mdxeditor/editor/style.css'
+import { MDXEditor, toolbarPlugin, listsPlugin, linkPlugin, imagePlugin, quotePlugin, headingsPlugin, markdownShortcutPlugin } from '@mdxeditor/editor'
 
 interface Article {
   id: string
@@ -35,6 +37,7 @@ interface Article {
   featured: boolean
   published: boolean
   readTime: string
+  imageUrl?: string
   createdAt: string
 }
 
@@ -56,9 +59,11 @@ export default function AdminArticlesPage() {
   const { toast } = useToast()
 
   const [formData, setFormData] = useState({
-    title: '', slug: '', excerpt: '', content: '', category: '', author: '',
-    featured: false, published: true, readTime: '5 menit',
+    title: '', slug: '', excerpt: '', content: '', category: '', author: '', imageUrl: '',
+    featured: false, published: true, readTime: '5 menit'
   })
+  const [uploadingCover, setUploadingCover] = useState(false)
+  const [uploadingContentImage, setUploadingContentImage] = useState(false)
 
   useEffect(() => { fetchArticles() }, [])
 
@@ -84,13 +89,13 @@ export default function AdminArticlesPage() {
 
   const openCreateDialog = () => {
     setEditingArticle(null)
-    setFormData({ title: '', slug: '', excerpt: '', content: '', category: '', author: '', featured: false, published: true, readTime: '5 menit' })
+    setFormData({ title: '', slug: '', excerpt: '', content: '', category: '', author: '', imageUrl: '', featured: false, published: true, readTime: '5 menit' })
     setIsDialogOpen(true)
   }
 
   const openEditDialog = (article: Article) => {
     setEditingArticle(article)
-    setFormData({ title: article.title, slug: article.slug, excerpt: article.excerpt, content: article.content, category: article.category, author: article.author, featured: article.featured, published: article.published, readTime: article.readTime })
+    setFormData({ title: article.title, slug: article.slug, excerpt: article.excerpt, content: article.content, category: article.category, author: article.author, imageUrl: article.imageUrl || '', featured: article.featured, published: article.published, readTime: article.readTime })
     setIsDialogOpen(true)
   }
 
@@ -143,6 +148,53 @@ export default function AdminArticlesPage() {
     (a.title.toLowerCase().includes(searchQuery.toLowerCase()) || a.author.toLowerCase().includes(searchQuery.toLowerCase())) &&
     (filterCategory === 'all' || a.category === filterCategory)
   )
+
+  const normalizeImageUrl = (url: string) => {
+    if (!url) return url
+    try {
+      const u = new URL(url)
+      if (u.hostname.includes('drive.google.com')) {
+        if (u.pathname.includes('/file/d/')) {
+          const parts = u.pathname.split('/')
+          const idIndex = parts.findIndex(p => p === 'd') + 1
+          const fileId = parts[idIndex]
+          if (fileId) return `https://drive.google.com/uc?export=view&id=${fileId}`
+        }
+        const idParam = u.searchParams.get('id')
+        if (idParam) return `https://drive.google.com/uc?export=view&id=${idParam}`
+      }
+      return url
+    } catch {
+      return url
+    }
+  }
+
+  const handleUpload = async (file: File, setUrl: (v: string) => void) => {
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('folder', 'articles')
+      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      const json = await res.json()
+      if (json?.success && json.url) {
+        setUrl(json.url)
+        toast({ title: 'Berhasil', description: 'Gambar diunggah' })
+      } else {
+        throw new Error(json?.error || 'Upload gagal')
+      }
+    } catch {
+      toast({ title: 'Gagal', description: 'Tidak dapat mengunggah gambar', variant: 'destructive' })
+    }
+  }
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      toast({ title: 'URL disalin', description: 'Tempelkan URL ke konten dengan Insert Image' })
+    } catch {
+      toast({ title: 'Gagal menyalin', variant: 'destructive' })
+    }
+  }
 
   const formatDate = (d: string) => new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
 
@@ -232,7 +284,86 @@ export default function AdminArticlesPage() {
               <div className="space-y-2"><Label>Slug</Label><Input placeholder="url-artikel" value={formData.slug} onChange={(e) => handleInputChange('slug', e.target.value)} required /></div>
             </div>
             <div className="space-y-2"><Label>Ringkasan</Label><Textarea placeholder="Ringkasan singkat..." rows={2} value={formData.excerpt} onChange={(e) => handleInputChange('excerpt', e.target.value)} required /></div>
-            <div className="space-y-2"><Label>Konten</Label><Textarea placeholder="Tulis konten artikel..." rows={8} value={formData.content} onChange={(e) => handleInputChange('content', e.target.value)} required /></div>
+            <div className="space-y-2">
+              <Label>Gambar Sampul (opsional)</Label>
+              <div className="flex items-center gap-3">
+                <Input
+                  placeholder="Tempel URL gambar (mendukung Google Drive publik)"
+                  value={formData.imageUrl}
+                  onChange={(e) => handleInputChange('imageUrl', e.target.value)}
+                  onBlur={(e) => {
+                    const normalized = normalizeImageUrl(e.target.value.trim())
+                    if (normalized !== e.target.value.trim()) {
+                      handleInputChange('imageUrl', normalized)
+                      toast({ title: 'URL diubah', description: 'Link Google Drive diubah ke link langsung' })
+                    }
+                  }}
+                />
+                <input id="cover-upload" type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0]
+                  if (!file) return
+                  setUploadingCover(true)
+                  await handleUpload(file, (url) => handleInputChange('imageUrl', url))
+                  setUploadingCover(false)
+                  e.currentTarget.value = ''
+                }} />
+                <Button type="button" variant="outline" onClick={() => document.getElementById('cover-upload')?.click()} disabled={uploadingCover}>
+                  {uploadingCover ? 'Mengunggah...' : 'Unggah Sampul'}
+                </Button>
+              </div>
+              {formData.imageUrl && (
+                <div className="mt-2">
+                  <img src={formData.imageUrl} alt="Sampul" className="h-24 rounded-md object-cover border" />
+                </div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label>Konten</Label>
+              <div className="rounded-md border overflow-hidden">
+                <MDXEditor
+                  markdown={formData.content}
+                  onChange={(md) => handleInputChange('content', md)}
+                  plugins={[
+                    toolbarPlugin(),
+                    listsPlugin(),
+                    linkPlugin(),
+                    imagePlugin(),
+                    quotePlugin(),
+                    headingsPlugin(),
+                    markdownShortcutPlugin()
+                  ]}
+                  contentEditableClassName="prose prose-slate max-w-none p-3 sm:p-4"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <input id="content-image-upload" type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0]
+                  if (!file) return
+                  setUploadingContentImage(true)
+                  try {
+                    const fd = new FormData()
+                    fd.append('file', file)
+                    fd.append('folder', 'articles')
+                    const res = await fetch('/api/upload', { method: 'POST', body: fd })
+                    const json = await res.json()
+                    if (json?.success && json.url) {
+                      await copyToClipboard(json.url)
+                    } else {
+                      throw new Error(json?.error || 'Upload gagal')
+                    }
+                  } catch {
+                    toast({ title: 'Gagal', description: 'Tidak dapat mengunggah gambar', variant: 'destructive' })
+                  } finally {
+                    setUploadingContentImage(false)
+                    e.currentTarget.value = ''
+                  }
+                }} />
+                <Button type="button" variant="outline" onClick={() => document.getElementById('content-image-upload')?.click()} disabled={uploadingContentImage}>
+                  {uploadingContentImage ? 'Mengunggah...' : 'Unggah Gambar untuk Konten'}
+                </Button>
+                <span className="text-xs text-slate-500">Setelah upload, URL otomatis disalin — gunakan tombol Insert Image pada toolbar editor.</span>
+              </div>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2"><Label>Kategori</Label><Select value={formData.category} onValueChange={(v) => handleInputChange('category', v)}><SelectTrigger><SelectValue placeholder="Pilih kategori" /></SelectTrigger><SelectContent>{categories.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}</SelectContent></Select></div>
               <div className="space-y-2"><Label>Penulis</Label><Input placeholder="Nama penulis" value={formData.author} onChange={(e) => handleInputChange('author', e.target.value)} required /></div>
