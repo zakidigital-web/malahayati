@@ -126,11 +126,19 @@ export default function AboutPage() {
             {teamMembers.map((item, i) => (
               <Card key={i} className="border-0 shadow-lg">
                 <CardContent className="p-4 sm:p-6">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <Users className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 flex-shrink-0" />
-                    <div className="text-amber-700 font-semibold text-sm sm:text-base">{item.role}</div>
+                  <div className="flex items-center gap-3 mb-3">
+                    {item.imageUrl ? (
+                      <img src={item.imageUrl} alt={item.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold">
+                        {item.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                      </div>
+                    )}
+                    <div>
+                      <div className="text-slate-900 text-base sm:text-lg font-bold">{item.name}</div>
+                      <div className="text-amber-700 font-semibold text-xs sm:text-sm">{item.role}</div>
+                    </div>
                   </div>
-                  <div className="text-slate-900 text-base sm:text-lg font-bold">{item.name}</div>
                 </CardContent>
               </Card>
             ))}

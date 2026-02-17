@@ -150,6 +150,15 @@ export default function AdminTeamPage() {
                 <p className="text-sm text-amber-600 font-medium">{m.role}</p>
                 <p className="text-sm text-slate-500 mt-2">{m.description}</p>
                 <p className="text-xs text-slate-400 mt-2">{m.education}</p>
+                <div className="mt-2">
+                  {m.imageUrl ? (
+                    <a href={m.imageUrl} target="_blank" rel="noreferrer" className="text-xs text-amber-600 hover:underline">
+                      Lihat Foto
+                    </a>
+                  ) : (
+                    <span className="text-xs text-slate-400">Tidak ada foto</span>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))
