@@ -13,7 +13,7 @@ interface TeamMember {
   name: string
   role: string
   description?: string
-  edu?: string
+  education?: string
   active?: boolean
   order?: number
 }
@@ -31,13 +31,18 @@ const milestones = [
   { year: '2025', title: 'Capaian', desc: '3 tahun beroperasi di Banyuwangi' },
 ]
 
+const organization = [
+  { role: 'Penasehat', name: 'Slamet Yadi' },
+  { role: 'Pengawas', name: 'Heru Setiawan, S.Pd.' },
+  { role: 'Ketua', name: 'Firman Febri Cahyana, S.H., C.MSP' },
+  { role: 'Wakil Ketua', name: 'Moh. Rifki, S.H.' },
+  { role: 'Sekretaris', name: 'Vivi Anjarwati, S.Pd.' },
+  { role: 'Bendahara', name: 'Yasmin Nanda Aditama, S.H.' },
+  { role: 'Wakil Bendahara', name: 'Wiyanda Nindi Aditama, A.Md.' },
+]
+
 export default function AboutPage() {
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
-    { name: 'Dr. H. Malahayati, S.H., M.H.', role: 'Pendiri & Managing Partner', description: '20+ tahun pengalaman hukum.', edu: 'S3 Ilmu Hukum - UI' },
-    { name: 'Andi Wijaya, S.H., LL.M.', role: 'Senior Partner', description: 'Spesialis hukum bisnis.', edu: 'LL.M. - Harvard' },
-    { name: 'Dewi Sartika, S.H., M.Kn.', role: 'Partner', description: 'Ahli hukum keluarga.', edu: 'S2 Kenotariatan - UGM' },
-    { name: 'Rizki Pratama, S.H., M.H.', role: 'Senior Associate', description: 'Fokus litigasi.', edu: 'S2 Ilmu Hukum - Unpad' },
-  ])
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -48,7 +53,7 @@ export default function AboutPage() {
           const items = json.data
             .filter((m: any) => m.active !== false)
             .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
-            .map((m: any) => ({ name: m.name, role: m.role, description: m.description, edu: m.education }))
+            .map((m: any) => ({ name: m.name, role: m.role, description: m.description, education: m.education }))
           if (items.length) setTeamMembers(items)
         }
       } catch {}
@@ -102,6 +107,32 @@ export default function AboutPage() {
                 <Scale className="h-24 w-24 sm:h-32 sm:w-32 lg:h-40 lg:w-40 text-slate-300" />
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12 sm:py-16 lg:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+            <p className="text-amber-600 text-xs sm:text-sm font-medium tracking-widest uppercase mb-3 sm:mb-4">
+              Struktur Organisasi
+            </p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
+              Yayasan Konsultasi dan Bantuan Hukum Malahayati
+            </h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto">
+            {teamMembers.map((item, i) => (
+              <Card key={i} className="border-0 shadow-lg">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <Users className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 flex-shrink-0" />
+                    <div className="text-amber-700 font-semibold text-sm sm:text-base">{item.role}</div>
+                  </div>
+                  <div className="text-slate-900 text-base sm:text-lg font-bold">{item.name}</div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

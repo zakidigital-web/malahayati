@@ -58,16 +58,6 @@ const milestones = [
   },
 ]
 
-const organization = [
-  { role: 'Penasehat', name: 'Slamet Yadi' },
-  { role: 'Pengawas', name: 'Heru Setiawan, S.Pd.' },
-  { role: 'Ketua', name: 'Firman Febri Cahyana, S.H., C.MSP' },
-  { role: 'Wakil Ketua', name: 'Moh. Rifki, S.H.' },
-  { role: 'Sekretaris', name: 'Vivi Anjarwati, S.Pd.' },
-  { role: 'Bendahara', name: 'Yasmin Nanda Aditama, S.H.' },
-  { role: 'Wakil Bendahara', name: 'Wiyanda Nindi Aditama, A.Md.' },
-]
-
 export default async function AboutPage() {
   const members = await db.teamMember.findMany({
     where: { active: true },
@@ -203,7 +193,7 @@ export default async function AboutPage() {
               </p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {organization.map((item, i) => (
+              {members.map((item: any, i: number) => (
                 <Card key={i} className="border-0 shadow-lg">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-3">

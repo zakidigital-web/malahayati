@@ -73,3 +73,32 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: false, error: 'Failed to delete team member' }, { status: 500 })
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { members, replaceAll } = body || {}
+    if (!Array.isArray(members) || members.length === 0) {
+      return NextResponse.json({ success: false, error: 'members array is required' }, { status: 400 })
+    }
+    const data = members.map((m: any, idx: number) => ({
+      name: String(m.name).trim(),
+      role: String(m.role).trim(),
+      description: m.description ? String(m.description) : 'Pengurus Yayasan',
+      education: m.education ? String(m.education) : '-',
+      order: Number.isFinite(m.order) ? m.order : idx,
+      active: m.active !== false,
+    }))
+    const result = await db.$transaction(async (tx) => {
+      if (replaceAll) {
+        await tx.teamMember.deleteMany({})
+      }
+      const create = await tx.teamMember.createMany({ data })
+      return create.count
+    })
+    return NextResponse.json({ success: true, count: result }, { headers: { 'Cache-Control': 'no-store' } })
+  } catch (error) {
+    console.error('Error bulk updating team members:', error)
+    return NextResponse.json({ success: false, error: 'Failed to bulk update' }, { status: 500 })
+  }
+}
