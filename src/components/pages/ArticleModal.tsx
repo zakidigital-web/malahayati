@@ -119,7 +119,32 @@ export default function ArticleModal({ articleId, isOpen, onClose }: ArticleModa
 
             {/* Content */}
             <div className="prose prose-slate max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  img: ({ node, src, ...props }) => {
+                    const toDisplayUrl = (url?: string | null) => {
+                      if (!url) return ''
+                      try {
+                        const u = new URL(url, 'https://dummy.local')
+                        if (u.hostname.includes('drive.google.com')) {
+                          if (u.pathname.includes('/file/d/')) {
+                            const parts = u.pathname.split('/')
+                            const idx = parts.findIndex(p => p === 'd')
+                            if (idx >= 0 && parts[idx + 1]) return `/api/drive-image?id=${parts[idx + 1]}`
+                          }
+                          const idParam = u.searchParams.get('id')
+                          if (idParam) return `/api/drive-image?id=${idParam}`
+                        }
+                        return url
+                      } catch {
+                        return url
+                      }
+                    }
+                    return <img src={toDisplayUrl(src)} alt={(props as any).alt ?? ''} {...props} />
+                  },
+                }}
+              >
                 {article.content}
               </ReactMarkdown>
             </div>

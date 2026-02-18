@@ -169,6 +169,25 @@ export default function AdminArticlesPage() {
     }
   }
 
+  const toDisplayUrl = (url?: string | null) => {
+    if (!url) return ''
+    try {
+      const u = new URL(url, 'https://dummy.local')
+      if (u.hostname.includes('drive.google.com')) {
+        if (u.pathname.includes('/file/d/')) {
+          const parts = u.pathname.split('/')
+          const idx = parts.findIndex(p => p === 'd')
+          if (idx >= 0 && parts[idx + 1]) return `/api/drive-image?id=${parts[idx + 1]}`
+        }
+        const idParam = u.searchParams.get('id')
+        if (idParam) return `/api/drive-image?id=${idParam}`
+      }
+      return url
+    } catch {
+      return url
+    }
+  }
+
   const handleUpload = async (file: File, setUrl: (v: string) => void) => {
     try {
       const fd = new FormData()
@@ -178,7 +197,8 @@ export default function AdminArticlesPage() {
       const res = await fetch('/api/upload', { method: 'POST', body: fd })
       const json = await res.json()
       if (json?.success && json.url) {
-        setUrl(json.url)
+        const nextUrl = json.provider === 'gdrive' && json.id ? `/api/drive-image?id=${json.id}` : json.url
+        setUrl(nextUrl)
         toast({ title: 'Berhasil', description: 'Gambar diunggah' })
       } else {
         throw new Error(json?.error || 'Upload gagal')
@@ -314,7 +334,7 @@ export default function AdminArticlesPage() {
               </div>
               {formData.imageUrl && (
                 <div className="mt-2">
-                  <img src={formData.imageUrl} alt="Sampul" className="h-24 rounded-md object-cover border" />
+                  <img src={toDisplayUrl(formData.imageUrl)} alt="Sampul" className="h-24 rounded-md object-cover border" />
                 </div>
               )}
             </div>
@@ -349,7 +369,8 @@ export default function AdminArticlesPage() {
                     const res = await fetch('/api/upload', { method: 'POST', body: fd })
                     const json = await res.json()
                     if (json?.success && json.url) {
-                      await copyToClipboard(json.url)
+                      const nextUrl = json.provider === 'gdrive' && json.id ? `/api/drive-image?id=${json.id}` : json.url
+                      await copyToClipboard(nextUrl)
                     } else {
                       throw new Error(json?.error || 'Upload gagal')
                     }

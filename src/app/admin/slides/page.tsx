@@ -36,6 +36,43 @@ export default function AdminSlidesPage() {
   const [formData, setFormData] = useState({
     title: '', subtitle: '', description: '', buttonText: '', buttonUrl: '', imageUrl: '', order: 0, active: true
   })
+  const normalizeImageUrl = (url: string) => {
+    if (!url) return url
+    try {
+      const u = new URL(url)
+      if (u.hostname.includes('drive.google.com')) {
+        if (u.pathname.includes('/file/d/')) {
+          const parts = u.pathname.split('/')
+          const idIndex = parts.findIndex(p => p === 'd') + 1
+          const fileId = parts[idIndex]
+          if (fileId) return `https://drive.google.com/uc?export=view&id=${fileId}`
+        }
+        const idParam = u.searchParams.get('id')
+        if (idParam) return `https://drive.google.com/uc?export=view&id=${idParam}`
+      }
+      return url
+    } catch {
+      return url
+    }
+  }
+  const toDisplayUrl = (url?: string | null) => {
+    if (!url) return ''
+    try {
+      const u = new URL(url, 'https://dummy.local')
+      if (u.hostname.includes('drive.google.com')) {
+        if (u.pathname.includes('/file/d/')) {
+          const parts = u.pathname.split('/')
+          const idx = parts.findIndex(p => p === 'd')
+          if (idx >= 0 && parts[idx + 1]) return `/api/drive-image?id=${parts[idx + 1]}`
+        }
+        const idParam = u.searchParams.get('id')
+        if (idParam) return `/api/drive-image?id=${idParam}`
+      }
+      return url
+    } catch {
+      return url || ''
+    }
+  }
 
   useEffect(() => { fetchSlides() }, [])
 
@@ -132,7 +169,7 @@ export default function AdminSlidesPage() {
                   
                   {s.imageUrl ? (
                     <div className="w-24 h-16 rounded bg-slate-100 overflow-hidden flex-shrink-0">
-                      <img src={s.imageUrl} alt="Slide preview" className="w-full h-full object-cover" />
+                      <img src={toDisplayUrl(s.imageUrl)} alt="Slide preview" className="w-full h-full object-cover" />
                     </div>
                   ) : (
                     <div className="w-24 h-16 rounded bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center flex-shrink-0">
@@ -194,8 +231,19 @@ export default function AdminSlidesPage() {
             </div>
             <div className="space-y-2">
               <Label>URL Gambar (opsional)</Label>
-              <Input placeholder="https://..." value={formData.imageUrl} onChange={(e) => setFormData(p => ({ ...p, imageUrl: e.target.value }))} />
-              <p className="text-xs text-slate-400">Kosongkan untuk menggunakan gradient default</p>
+              <Input
+                placeholder="https://..."
+                value={formData.imageUrl}
+                onChange={(e) => setFormData(p => ({ ...p, imageUrl: e.target.value }))}
+                onBlur={(e) => {
+                  const normalized = normalizeImageUrl(e.target.value.trim())
+                  if (normalized !== e.target.value.trim()) {
+                    setFormData(p => ({ ...p, imageUrl: normalized }))
+                    toast({ title: 'URL diubah', description: 'Link Google Drive diubah ke link langsung' })
+                  }
+                }}
+              />
+              <p className="text-xs text-slate-400">Kosongkan untuk menggunakan gradient default. Link Google Drive akan diubah otomatis.</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="space-y-2 flex-1">

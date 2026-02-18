@@ -55,6 +55,26 @@ export default function AdminTeamPage() {
     }
   }
 
+  const toDisplayUrl = (url?: string | null) => {
+    if (!url) return ''
+    try {
+      const u = new URL(url, 'https://dummy.local')
+      if (u.hostname.includes('drive.google.com')) {
+        // Extract id and proxy through our API for reliable rendering
+        if (u.pathname.includes('/file/d/')) {
+          const parts = u.pathname.split('/')
+          const idx = parts.findIndex(p => p === 'd')
+          if (idx >= 0 && parts[idx + 1]) return `/api/drive-image?id=${parts[idx + 1]}`
+        }
+        const idParam = u.searchParams.get('id')
+        if (idParam) return `/api/drive-image?id=${idParam}`
+      }
+      return url
+    } catch {
+      return url
+    }
+  }
+
   useEffect(() => { fetchMembers() }, [])
 
   const fetchMembers = async () => {
@@ -152,7 +172,7 @@ export default function AdminTeamPage() {
                 <p className="text-xs text-slate-400 mt-2">{m.education}</p>
                 <div className="mt-2">
                   {m.imageUrl ? (
-                    <a href={m.imageUrl} target="_blank" rel="noreferrer" className="text-xs text-amber-600 hover:underline">
+                    <a href={toDisplayUrl(m.imageUrl)} target="_blank" rel="noreferrer" className="text-xs text-amber-600 hover:underline">
                       Lihat Foto
                     </a>
                   ) : (
@@ -194,7 +214,7 @@ export default function AdminTeamPage() {
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
                   {formData.imageUrl ? (
-                    <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                    <img src={toDisplayUrl(formData.imageUrl)} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <ImageIcon className="h-6 w-6 text-slate-400" />
                   )}
@@ -212,7 +232,8 @@ export default function AdminTeamPage() {
                       const res = await fetch('/api/upload', { method: 'POST', body: fd })
                       const json = await res.json()
                       if (json?.success && json.url) {
-                        setFormData(p => ({ ...p, imageUrl: json.url }))
+                        const nextUrl = json.provider === 'gdrive' && json.id ? `/api/drive-image?id=${json.id}` : json.url
+                        setFormData(p => ({ ...p, imageUrl: nextUrl }))
                         toast({ title: 'Foto terunggah', description: 'Foto berhasil diunggah' })
                       } else {
                         throw new Error(json?.error || 'Upload gagal')

@@ -23,6 +23,24 @@ export default function HeroSlider({ onConsultClick }: HeroSliderProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [loading, setLoading] = useState(true)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const toDisplayUrl = (url?: string | null) => {
+    if (!url) return ''
+    try {
+      const u = new URL(url, 'https://dummy.local')
+      if (u.hostname.includes('drive.google.com')) {
+        if (u.pathname.includes('/file/d/')) {
+          const parts = u.pathname.split('/')
+          const idx = parts.findIndex(p => p === 'd')
+          if (idx >= 0 && parts[idx + 1]) return `/api/drive-image?id=${parts[idx + 1]}`
+        }
+        const idParam = u.searchParams.get('id')
+        if (idParam) return `/api/drive-image?id=${idParam}`
+      }
+      return url
+    } catch {
+      return url || ''
+    }
+  }
 
   useEffect(() => {
     fetchSlides()
@@ -113,7 +131,7 @@ export default function HeroSlider({ onConsultClick }: HeroSliderProps) {
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         {slide.imageUrl ? (
           <img 
-            src={slide.imageUrl} 
+            src={toDisplayUrl(slide.imageUrl)} 
             alt="" 
             className="w-full h-full object-cover opacity-30"
           />
