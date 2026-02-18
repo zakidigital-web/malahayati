@@ -22,9 +22,9 @@ export const metadata: Metadata = {
   keywords: ["Lembaga Bantuan Hukum", "Konsultasi Hukum", "Pendampingan Hukum", "Pengacara", "Advokat", "Malahayati", "Jakarta"],
   authors: [{ name: "Lembaga Bantuan Hukum Malahayati" }],
   icons: {
-    icon: "/logo.svg",
-    shortcut: "/logo.svg",
-    apple: "/logo.svg",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
   openGraph: {
     title: "Lembaga Bantuan Hukum Malahayati",
