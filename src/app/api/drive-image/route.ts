@@ -62,9 +62,28 @@ export async function GET(request: NextRequest) {
       { fileId: id, alt: 'media' },
       { responseType: 'arraybuffer' as any }
     )
-    const buffer = Buffer.from(data.data as ArrayBuffer)
+    const raw: unknown = (data as any).data
+    let payload: Uint8Array
+    if (raw instanceof ArrayBuffer) {
+      payload = new Uint8Array(raw)
+    } else if (ArrayBuffer.isView(raw)) {
+      const view = raw as ArrayBufferView
+      payload = new Uint8Array(view.buffer, view.byteOffset, view.byteLength)
+    } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(raw)) {
+      payload = new Uint8Array(raw as Buffer)
+    } else if (typeof raw === 'string') {
+      payload = new TextEncoder().encode(raw)
+    } else {
+      payload = new Uint8Array()
+    }
 
-    return new NextResponse(buffer, {
+    const sliced =
+      payload.byteOffset === 0 && payload.byteLength === payload.buffer.byteLength
+        ? payload.buffer
+        : payload.buffer.slice(payload.byteOffset, payload.byteOffset + payload.byteLength)
+    const arrBuf = sliced as unknown as ArrayBuffer
+    const blob = new Blob([arrBuf], { type: mime })
+    return new NextResponse(blob, {
       headers: {
         'content-type': mime,
         'cache-control': 'public, max-age=86400, immutable',

@@ -34,10 +34,10 @@ const services = [
 ]
 
 const stats = [
-  { number: '20+', label: 'Tahun Pengalaman' },
-  { number: '5000+', label: 'Klien Terlayani' },
-  { number: '98%', label: 'Tingkat Keberhasilan' },
-  { number: '15+', label: 'Pengacara Profesional' },
+  { number: '3+', label: 'Tahun Mendampingi' },
+  { number: '200+', label: 'Klien Terlayani' },
+  { number: '95%', label: 'Kepuasan Klien' },
+  { number: '8+', label: 'Tim Hukum & Paralegal' },
 ]
 
 interface Testimonial {
@@ -111,15 +111,15 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                 Tentang Kami
               </p>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-4 sm:mb-6 leading-tight">
-                Lembaga Hukum yang Mengutamakan
-                <span className="text-amber-600"> Kepentingan Klien</span>
+                YKBH Malahayati Banyuwangi
+                <span className="text-amber-600"> — Akses Keadilan untuk Semua</span>
               </h2>
               <p className="text-slate-600 text-sm sm:text-base lg:text-lg leading-relaxed mb-4 sm:mb-6">
-                Lembaga Bantuan Hukum Malahayati didirikan untuk memberikan akses keadilan 
-                yang setara bagi seluruh masyarakat Indonesia.
+                Berdiri sejak 2022 di Banyuwangi, kami berkomitmen memberikan pendampingan dan
+                solusi hukum yang mudah diakses, profesional, dan berpihak pada keadilan.
               </p>
               <div className="space-y-2 sm:space-y-4 mb-6 sm:mb-8">
-                {['Profesional dan berpengalaman', 'Transparan dalam proses dan biaya', 'Menjaga kerahasiaan klien', 'Respons cepat dan komunikatif'].map((item, i) => (
+                {['Profesional & berpengalaman', 'Transparan dalam proses dan biaya', 'Kerahasiaan klien terjaga', 'Respons cepat & komunikatif'].map((item, i) => (
                   <div key={i} className="flex items-center gap-2 sm:gap-3">
                     <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 flex-shrink-0" />
                     <span className="text-slate-700 text-sm sm:text-base">{item}</span>
@@ -138,8 +138,8 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                 </div>
               </div>
               <div className="absolute -bottom-3 sm:-bottom-6 -left-3 sm:-left-6 bg-amber-500 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-xl">
-                <div className="text-2xl sm:text-3xl font-bold">20+</div>
-                <div className="text-amber-100 text-xs sm:text-sm">Tahun Melayani</div>
+                <div className="text-2xl sm:text-3xl font-bold">3+</div>
+                <div className="text-amber-100 text-xs sm:text-sm">Tahun Mendampingi</div>
               </div>
             </div>
           </div>
@@ -206,8 +206,8 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                 Komitmen Kami untuk Keberhasilan Anda
               </h2>
               <p className="text-slate-400 text-sm sm:text-base lg:text-lg mb-6 sm:mb-8">
-                Dengan pengalaman lebih dari dua dekade, kami telah membantu ribuan klien 
-                menyelesaikan permasalahan hukum mereka.
+                Sejak 2022, kami telah membantu ratusan klien di Banyuwangi dan sekitarnya
+                menyelesaikan permasalahan hukum secara efektif dan manusiawi.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
@@ -304,10 +304,10 @@ export default function HomePage({ onNavigate }: HomePageProps) {
               </h2>
               <div className="space-y-4 sm:space-y-6">
                 {[
-                  { icon: Scale, label: 'Alamat', value: 'Perumahan Candra Kirana Asri Blok C1 Kertosari' },
-                  { icon: MessageSquare, label: 'Telepon', value: '+62 21 1234 5678' },
+                  { icon: Scale, label: 'Alamat', value: 'Perumahan Candra Kirana Asri Blok C1, Kertosari, Banyuwangi' },
+                  { icon: MessageSquare, label: 'WA Admin', value: '+62 812-0000-0000' },
                   { icon: FileText, label: 'Email', value: 'ykbhmalahayati@gmail.com' },
-                  { icon: Clock, label: 'Jam Kerja', value: 'Senin-Jumat, 08.00-17.00' },
+                  { icon: Clock, label: 'Jam Kerja', value: 'Senin–Jumat, 08.00–16.00' },
                 ].map((item, i) => {
                   const Icon = item.icon
                   return (

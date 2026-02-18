@@ -141,7 +141,13 @@ export default function ArticleModal({ articleId, isOpen, onClose }: ArticleModa
                         return url
                       }
                     }
-                    return <img src={toDisplayUrl(src)} alt={(props as any).alt ?? ''} {...props} />
+                    let resolvedSrc: string | undefined
+                    if (typeof src === 'string') {
+                      resolvedSrc = src
+                    } else if (typeof window !== 'undefined' && src instanceof Blob) {
+                      resolvedSrc = URL.createObjectURL(src)
+                    }
+                    return <img src={toDisplayUrl(resolvedSrc ?? null)} alt={(props as any).alt ?? ''} {...props} />
                   },
                 }}
               >
