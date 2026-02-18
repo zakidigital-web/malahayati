@@ -305,7 +305,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
               <div className="space-y-4 sm:space-y-6">
                 {[
                   { icon: Scale, label: 'Alamat', value: 'Perumahan Candra Kirana Asri Blok C1, Kertosari, Banyuwangi' },
-                  { icon: MessageSquare, label: 'WA Admin', value: '+62 812-0000-0000' },
+                  { icon: MessageSquare, label: 'WA Admin', value: '+1 417 6308853' },
                   { icon: FileText, label: 'Email', value: 'ykbhmalahayati@gmail.com' },
                   { icon: Clock, label: 'Jam Kerja', value: 'Senin–Jumat, 08.00–16.00' },
                 ].map((item, i) => {
