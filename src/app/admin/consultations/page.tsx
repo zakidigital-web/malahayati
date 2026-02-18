@@ -4,6 +4,14 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
@@ -13,7 +21,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
-import { Search, Eye, MessageSquare, Clock, CheckCircle, Phone } from 'lucide-react'
+import { Search, Eye, MessageSquare, Clock, CheckCircle, Phone, Edit, Trash2, Plus } from 'lucide-react'
 
 interface Consultation {
   id: string
@@ -34,6 +42,18 @@ export default function AdminConsultationsPage() {
   const [filterStatus, setFilterStatus] = useState('all')
   const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null)
   const [notes, setNotes] = useState('')
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState<Consultation | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [formData, setFormData] = useState({
+    namaLengkap: '',
+    nomorWhatsapp: '',
+    email: '',
+    jenisPermasalahan: '',
+    pesan: '',
+    status: 'pending',
+    notes: '',
+  })
   const { toast } = useToast()
 
   useEffect(() => { fetchConsultations() }, [])
@@ -47,6 +67,58 @@ export default function AdminConsultationsPage() {
       console.error('Error:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const openCreateForm = () => {
+    setEditingItem(null)
+    setFormData({ namaLengkap: '', nomorWhatsapp: '', email: '', jenisPermasalahan: '', pesan: '', status: 'pending', notes: '' })
+    setIsFormOpen(true)
+  }
+
+  const openEditForm = (item: Consultation) => {
+    setEditingItem(item)
+    setFormData({
+      namaLengkap: item.namaLengkap,
+      nomorWhatsapp: item.nomorWhatsapp,
+      email: item.email,
+      jenisPermasalahan: item.jenisPermasalahan,
+      pesan: item.pesan,
+      status: item.status,
+      notes: item.notes || '',
+    })
+    setIsFormOpen(true)
+  }
+
+  const handleSubmitForm = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    try {
+      if (editingItem) {
+        const res = await fetch('/api/admin/consultations', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: editingItem.id, ...formData }),
+        })
+        const json = await res.json()
+        if (!json.success) throw new Error()
+        toast({ title: 'Berhasil!', description: 'Konsultasi diperbarui' })
+      } else {
+        const res = await fetch('/api/admin/consultations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        })
+        const json = await res.json()
+        if (!json.success) throw new Error()
+        toast({ title: 'Berhasil!', description: 'Konsultasi dibuat' })
+      }
+      setIsFormOpen(false)
+      fetchConsultations()
+    } catch {
+      toast({ title: 'Gagal', description: 'Terjadi kesalahan', variant: 'destructive' })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -80,6 +152,19 @@ export default function AdminConsultationsPage() {
       }
     } catch (error) {
       toast({ title: 'Gagal', variant: 'destructive' })
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Hapus konsultasi ini?')) return
+    try {
+      const res = await fetch(`/api/admin/consultations?id=${id}`, { method: 'DELETE' })
+      const json = await res.json()
+      if (!json.success) throw new Error()
+      toast({ title: 'Berhasil!', description: 'Konsultasi dihapus' })
+      fetchConsultations()
+    } catch {
+      toast({ title: 'Gagal', description: 'Tidak dapat menghapus', variant: 'destructive' })
     }
   }
 
@@ -119,6 +204,9 @@ export default function AdminConsultationsPage() {
                   {s === 'all' ? 'Semua' : s === 'pending' ? 'Pending' : s === 'contacted' ? 'Dihubungi' : 'Selesai'}
                 </Button>
               ))}
+              <Button size="sm" className="bg-amber-500 hover:bg-amber-600" onClick={openCreateForm}>
+                <Plus className="h-4 w-4 mr-1" /> Buat Konsultasi
+              </Button>
             </div>
           </div>
         </CardContent>
@@ -150,6 +238,12 @@ export default function AdminConsultationsPage() {
                   <div className="flex sm:flex-col gap-2">
                     <Button variant="outline" size="sm" onClick={() => { setSelectedConsultation(c); setNotes(c.notes || '') }}>
                       <Eye className="h-4 w-4 mr-1" /> Detail
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => openEditForm(c)}>
+                      <Edit className="h-4 w-4 mr-1" /> Edit
+                    </Button>
+                    <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600" onClick={() => handleDelete(c.id)}>
+                      <Trash2 className="h-4 w-4 mr-1" /> Hapus
                     </Button>
                     {c.status === 'pending' && (
                       <Button size="sm" className="bg-blue-500 hover:bg-blue-600" onClick={() => updateStatus(c.id, 'contacted')}>
@@ -190,6 +284,67 @@ export default function AdminConsultationsPage() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader><DialogTitle>{editingItem ? 'Edit Konsultasi' : 'Buat Konsultasi'}</DialogTitle></DialogHeader>
+          <form onSubmit={handleSubmitForm} className="space-y-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Nama Lengkap</Label>
+                <Input value={formData.namaLengkap} onChange={(e) => setFormData(p => ({ ...p, namaLengkap: e.target.value }))} required />
+              </div>
+              <div className="space-y-2">
+                <Label>Nomor WhatsApp</Label>
+                <Input value={formData.nomorWhatsapp} onChange={(e) => setFormData(p => ({ ...p, nomorWhatsapp: e.target.value }))} required />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input type="email" value={formData.email} onChange={(e) => setFormData(p => ({ ...p, email: e.target.value }))} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Jenis Permasalahan</Label>
+              <Select value={formData.jenisPermasalahan} onValueChange={(v) => setFormData(p => ({ ...p, jenisPermasalahan: v }))}>
+                <SelectTrigger><SelectValue placeholder="Pilih jenis permasalahan" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pidana">Perkara Pidana</SelectItem>
+                  <SelectItem value="perdata">Sengketa Perdata</SelectItem>
+                  <SelectItem value="keluarga">Hukum Keluarga</SelectItem>
+                  <SelectItem value="bisnis">Hukum Bisnis</SelectItem>
+                  <SelectItem value="dokumen">Pembuatan Dokumen Hukum</SelectItem>
+                  <SelectItem value="lainnya">Lainnya</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Pesan</Label>
+              <Textarea rows={4} value={formData.pesan} onChange={(e) => setFormData(p => ({ ...p, pesan: e.target.value }))} required />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={formData.status} onValueChange={(v) => setFormData(p => ({ ...p, status: v }))}>
+                  <SelectTrigger><SelectValue placeholder="Pilih status" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="contacted">Dihubungi</SelectItem>
+                    <SelectItem value="completed">Selesai</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Catatan</Label>
+                <Input value={formData.notes} onChange={(e) => setFormData(p => ({ ...p, notes: e.target.value }))} />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => setIsFormOpen(false)}>Batal</Button>
+              <Button type="submit" className="bg-amber-500 hover:bg-amber-600" disabled={isSubmitting}>{isSubmitting ? 'Menyimpan...' : 'Simpan'}</Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

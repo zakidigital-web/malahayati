@@ -23,6 +23,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Lembaga Bantuan Hukum Malahayati" }],
   icons: {
     icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
   },
   openGraph: {
     title: "Lembaga Bantuan Hukum Malahayati",
