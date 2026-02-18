@@ -63,6 +63,24 @@ export default async function AboutPage() {
     where: { active: true },
     orderBy: { order: 'asc' },
   })
+  const toDisplayUrl = (url?: string | null) => {
+    if (!url) return ''
+    try {
+      const u = new URL(url)
+      if (u.hostname.includes('drive.google.com')) {
+        if (u.pathname.includes('/file/d/')) {
+          const parts = u.pathname.split('/')
+          const idx = parts.findIndex(p => p === 'd')
+          if (idx >= 0 && parts[idx + 1]) return `/api/drive-image?id=${parts[idx + 1]}`
+        }
+        const idParam = u.searchParams.get('id')
+        if (idParam) return `/api/drive-image?id=${idParam}`
+      }
+      return url
+    } catch {
+      return url || ''
+    }
+  }
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -254,13 +272,19 @@ export default async function AboutPage() {
               {members.map((member, index) => (
                 <Card key={index} className="group border-0 shadow-lg overflow-hidden">
                   <CardContent className="p-0">
-                    <div className="h-48 bg-gradient-to-br from-slate-200 to-slate-100 flex items-center justify-center">
-                      <div className="w-24 h-24 rounded-full bg-slate-900 flex items-center justify-center group-hover:bg-primary transition-colors">
-                        <span className="text-white font-bold text-2xl">
-                          {member.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('')}
-                        </span>
+                    {member.imageUrl ? (
+                      <div className="h-48 bg-slate-100 overflow-hidden">
+                        <img src={toDisplayUrl((member as any).imageUrl)} alt={member.name} className="w-full h-full object-cover" />
                       </div>
-                    </div>
+                    ) : (
+                      <div className="h-48 bg-gradient-to-br from-slate-200 to-slate-100 flex items-center justify-center">
+                        <div className="w-24 h-24 rounded-full bg-slate-900 flex items-center justify-center group-hover:bg-primary transition-colors">
+                          <span className="text-white font-bold text-2xl">
+                            {member.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('')}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                     <div className="p-6">
                       <h3 className="font-bold text-lg">{member.name}</h3>
                       <p className="text-primary font-medium text-sm mb-3">{member.role}</p>

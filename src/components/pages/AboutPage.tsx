@@ -62,6 +62,25 @@ export default function AboutPage() {
     fetchTeam()
   }, [])
 
+  const toDisplayUrl = (url?: string | null) => {
+    if (!url) return ''
+    try {
+      const u = new URL(url, 'https://dummy.local')
+      if (u.hostname.includes('drive.google.com')) {
+        if (u.pathname.includes('/file/d/')) {
+          const parts = u.pathname.split('/')
+          const idx = parts.findIndex(p => p === 'd')
+          if (idx >= 0 && parts[idx + 1]) return `/api/drive-image?id=${parts[idx + 1]}`
+        }
+        const idParam = u.searchParams.get('id')
+        if (idParam) return `/api/drive-image?id=${idParam}`
+      }
+      return url
+    } catch {
+      return url || ''
+    }
+  }
+
   return (
     <div className="pt-16 lg:pt-20">
       {/* Hero */}
@@ -128,27 +147,7 @@ export default function AboutPage() {
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center gap-3 mb-3">
                     {item.imageUrl ? (
-                      (() => {
-                        const toDisplayUrl = (url?: string | null) => {
-                          if (!url) return ''
-                          try {
-                            const u = new URL(url, 'https://dummy.local')
-                            if (u.hostname.includes('drive.google.com')) {
-                              if (u.pathname.includes('/file/d/')) {
-                                const parts = u.pathname.split('/')
-                                const idx = parts.findIndex(p => p === 'd')
-                                if (idx >= 0 && parts[idx + 1]) return `/api/drive-image?id=${parts[idx + 1]}`
-                              }
-                              const idParam = u.searchParams.get('id')
-                              if (idParam) return `/api/drive-image?id=${idParam}`
-                            }
-                            return url
-                          } catch {
-                            return url
-                          }
-                        }
-                        return <img src={toDisplayUrl(item.imageUrl)} alt={item.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover" />
-                      })()
+                      <img src={toDisplayUrl(item.imageUrl)} alt={item.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover" />
                     ) : (
                       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold">
                         {item.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
@@ -270,7 +269,7 @@ export default function AboutPage() {
               <Card key={i} className="border-0 bg-slate-50 hover:shadow-lg transition-shadow group text-center">
                 <CardContent className="p-3 sm:p-4 lg:p-6">
                   {member.imageUrl ? (
-                    <img src={member.imageUrl} alt={member.name} className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full object-cover mx-auto mb-3 sm:mb-4" />
+                    <img src={toDisplayUrl(member.imageUrl)} alt={member.name} className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full object-cover mx-auto mb-3 sm:mb-4" />
                   ) : (
                     <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white text-lg sm:text-xl lg:text-2xl font-bold group-hover:scale-105 transition-transform">
                       {member.name.split(' ').slice(0, 2).map(n => n[0]).join('')}

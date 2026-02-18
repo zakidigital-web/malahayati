@@ -72,6 +72,8 @@ export async function GET(request: NextRequest) {
     })
   } catch (err) {
     console.error('drive-image error:', err)
-    return NextResponse.json({ error: 'failed to fetch image' }, { status: 500 })
+    // Fallback: redirect to public UC link in case of permission or other API errors
+    const publicUrl = `https://drive.google.com/uc?export=view&id=${encodeURIComponent(id)}`
+    return NextResponse.redirect(publicUrl, { status: 302 })
   }
 }

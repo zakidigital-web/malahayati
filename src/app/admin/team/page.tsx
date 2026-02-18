@@ -155,7 +155,7 @@ export default function AdminTeamPage() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-3">
                   {m.imageUrl ? (
-                    <img src={m.imageUrl} alt={m.name} className="w-12 h-12 rounded-full object-cover" />
+                    <img src={toDisplayUrl(m.imageUrl)} alt={m.name} className="w-12 h-12 rounded-full object-cover" />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white font-bold">
                       {m.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
