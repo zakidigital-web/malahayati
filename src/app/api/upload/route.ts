@@ -4,6 +4,7 @@ import fs from 'fs'
 import { promises as fsp } from 'fs'
 import { google } from 'googleapis'
 import { Readable } from 'stream'
+import { put } from '@vercel/blob'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,10 +31,26 @@ export async function POST(request: Request) {
 
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
+    const originalName = (file as any).name || ''
+    const extFromName = path.extname(originalName) || ''
+    const safeName = sanitizeFileName(originalName || `upload${extFromName || '.jpg'}`)
+    const fileName = `${Date.now()}-${safeName}`
 
-    const clientEmail = process.env.GDRIVE_CLIENT_EMAIL || process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
-    const privateKey = (process.env.GDRIVE_PRIVATE_KEY || process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || '').replace(/\\n/g, '\n')
-    const driveFolderId = process.env.GDRIVE_FOLDER_ID
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+    if (storage === 'blob' && blobToken) {
+      try {
+        const pathname = `${folder}/${fileName}`
+        const blob = await put(pathname, arrayBuffer, {
+          access: 'public',
+          token: blobToken,
+          contentType: type,
+        })
+        return NextResponse.json({ success: true, url: blob.url, provider: 'blob', pathname: blob.pathname })
+      } catch (err) {
+        console.error('Blob upload failed, falling back to other storage:', err)
+      }
+    }
+
     const canUseDrive = !!clientEmail && !!privateKey && !!driveFolderId
 
     if (storage === 'drive' || (canUseDrive && storage !== 'local')) {
@@ -44,9 +61,6 @@ export async function POST(request: Request) {
           scopes: ['https://www.googleapis.com/auth/drive.file'],
         })
         const drive = google.drive({ version: 'v3', auth })
-        const extFromName = path.extname((file as any).name || '')
-        const safeName = sanitizeFileName((file as any).name || `upload${extFromName || '.jpg'}`)
-        const fileName = `${Date.now()}-${safeName}`
         const res = await drive.files.create({
           requestBody: {
             name: fileName,
@@ -73,10 +87,6 @@ export async function POST(request: Request) {
 
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads', folder)
     await fsp.mkdir(uploadsDir, { recursive: true })
-
-    const extFromName = path.extname((file as any).name || '') || ''
-    const safeName = sanitizeFileName((file as any).name || `upload${extFromName || '.jpg'}`)
-    const fileName = `${Date.now()}-${safeName}`
     const filePath = path.join(uploadsDir, fileName)
 
     await fsp.writeFile(filePath, buffer)

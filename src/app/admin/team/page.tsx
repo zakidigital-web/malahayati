@@ -231,7 +231,7 @@ export default function AdminTeamPage() {
                       const fd = new FormData()
                       fd.append('file', file)
                       fd.append('folder', 'team')
-                      fd.append('storage', 'drive')
+                      fd.append('storage', 'blob')
                       const res = await fetch('/api/upload', { method: 'POST', body: fd })
                       const json = await res.json()
                       if (json?.success && json.url) {
