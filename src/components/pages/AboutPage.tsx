@@ -32,6 +32,15 @@ const milestones = [
   { year: '2025', title: 'Capaian', desc: '3 tahun beroperasi di Banyuwangi' },
 ]
 
+const staticTeamImagesByRole: Record<string, string> = {
+  'Ketua': '/team/ketua.jpg',
+  'Wakil Ketua': '/team/wakil-ketua.jpg',
+  'Sekretaris': '/team/sekretaris.jpg',
+  'Bendahara': '/team/bendahara.jpg',
+  'Penasehat': '/team/penasehat.jpg',
+  'Pengawas': '/team/pengawas.jpg',
+}
+
 const organization = [
   { role: 'Penasehat', name: 'Slamet Yadi' },
   { role: 'Pengawas', name: 'Heru Setiawan, S.Pd.' },
@@ -142,25 +151,30 @@ export default function AboutPage() {
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto">
-            {teamMembers.map((item, i) => (
-              <Card key={i} className="border-0 shadow-lg">
-                <CardContent className="p-4 sm:p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    {item.imageUrl ? (
-                      <img src={toDisplayUrl(item.imageUrl)} alt={item.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover" />
-                    ) : (
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold">
-                        {item.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+            {teamMembers.map((item, i) => {
+              const staticImage = staticTeamImagesByRole[item.role] || ''
+              const dynamicImage = item.imageUrl ? toDisplayUrl(item.imageUrl) : ''
+              const imageSrc = staticImage || dynamicImage
+              return (
+                <Card key={i} className="border-0 shadow-lg">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      {imageSrc ? (
+                        <img src={imageSrc} alt={item.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold">
+                          {item.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                        </div>
+                      )}
+                      <div>
+                        <div className="text-slate-900 text-base sm:text-lg font-bold">{item.name}</div>
+                        <div className="text-amber-700 font-semibold text-xs sm:text-sm">{item.role}</div>
                       </div>
-                    )}
-                    <div>
-                      <div className="text-slate-900 text-base sm:text-lg font-bold">{item.name}</div>
-                      <div className="text-amber-700 font-semibold text-xs sm:text-sm">{item.role}</div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -265,22 +279,28 @@ export default function AboutPage() {
             </h2>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-8">
-            {teamMembers.map((member, i) => (
-              <Card key={i} className="border-0 bg-slate-50 hover:shadow-lg transition-shadow group text-center">
-                <CardContent className="p-3 sm:p-4 lg:p-6">
-                  {member.imageUrl ? (
-                    <img src={toDisplayUrl(member.imageUrl)} alt={member.name} className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full object-cover mx-auto mb-3 sm:mb-4" />
-                  ) : (
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white text-lg sm:text-xl lg:text-2xl font-bold group-hover:scale-105 transition-transform">
-                      {member.name.split(' ').slice(0, 2).map(n => n[0]).join('')}
-                    </div>
-                  )}
-                  <CardTitle className="text-xs sm:text-sm lg:text-lg mb-1">{member.name}</CardTitle>
-                  <CardDescription className="text-amber-600 font-medium text-[10px] sm:text-xs lg:text-sm mb-2">{member.role}</CardDescription>
-                  <p className="text-slate-600 text-[10px] sm:text-xs lg:text-sm hidden sm:block">{member.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+            {teamMembers.map((member, i) => {
+              const staticImage = staticTeamImagesByRole[member.role] || ''
+              const dynamicImage = member.imageUrl ? toDisplayUrl(member.imageUrl) : ''
+              const imageSrc = staticImage || dynamicImage
+              const hasImage = !!imageSrc
+              return (
+                <Card key={i} className="border-0 bg-slate-50 hover:shadow-lg transition-shadow group text-center">
+                  <CardContent className="p-3 sm:p-4 lg:p-6">
+                    {hasImage ? (
+                      <img src={imageSrc} alt={member.name} className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full object-cover mx-auto mb-3 sm:mb-4" />
+                    ) : (
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white text-lg sm:text-xl lg:text-2xl font-bold group-hover:scale-105 transition-transform">
+                        {member.name.split(' ').slice(0, 2).map(n => n[0]).join('')}
+                      </div>
+                    )}
+                    <CardTitle className="text-xs sm:text-sm lg:text-lg mb-1">{member.name}</CardTitle>
+                    <CardDescription className="text-amber-600 font-medium text-[10px] sm:text-xs lg:text-sm mb-2">{member.role}</CardDescription>
+                    <p className="text-slate-600 text-[10px] sm:text-xs lg:text-sm hidden sm:block">{member.description}</p>
+                  </CardContent>
+                </Card>
+              )
+            })}
           </div>
         </div>
       </section>

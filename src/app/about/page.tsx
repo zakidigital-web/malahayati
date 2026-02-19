@@ -58,6 +58,15 @@ const milestones = [
   },
 ]
 
+const staticTeamImagesByRole: Record<string, string> = {
+  'Ketua': '/team/ketua.jpg',
+  'Wakil Ketua': '/team/wakil-ketua.jpg',
+  'Sekretaris': '/team/sekretaris.jpg',
+  'Bendahara': '/team/bendahara.jpg',
+  'Penasehat': '/team/penasehat.jpg',
+  'Pengawas': '/team/pengawas.jpg',
+}
+
 export default async function AboutPage() {
   const members = await db.teamMember.findMany({
     where: { active: true },
@@ -269,34 +278,41 @@ export default async function AboutPage() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-              {members.map((member, index) => (
-                <Card key={index} className="group border-0 shadow-lg overflow-hidden">
-                  <CardContent className="p-0">
-                    {member.imageUrl ? (
-                      <div className="h-48 bg-slate-100 overflow-hidden">
-                        <img src={toDisplayUrl((member as any).imageUrl)} alt={member.name} className="w-full h-full object-cover" />
-                      </div>
-                    ) : (
-                      <div className="h-48 bg-gradient-to-br from-slate-200 to-slate-100 flex items-center justify-center">
-                        <div className="w-24 h-24 rounded-full bg-slate-900 flex items-center justify-center group-hover:bg-primary transition-colors">
-                          <span className="text-white font-bold text-2xl">
-                            {member.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('')}
-                          </span>
+              {members.map((member, index) => {
+                const role = (member as any).role as string
+                const staticImage = staticTeamImagesByRole[role] || ''
+                const dynamicImage = (member as any).imageUrl ? toDisplayUrl((member as any).imageUrl) : ''
+                const imageSrc = staticImage || dynamicImage
+                const hasImage = !!imageSrc
+                return (
+                  <Card key={index} className="group border-0 shadow-lg overflow-hidden">
+                    <CardContent className="p-0">
+                      {hasImage ? (
+                        <div className="h-48 bg-slate-100 overflow-hidden">
+                          <img src={imageSrc} alt={member.name} className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="h-48 bg-gradient-to-br from-slate-200 to-slate-100 flex items-center justify-center">
+                          <div className="w-24 h-24 rounded-full bg-slate-900 flex items-center justify-center group-hover:bg-primary transition-colors">
+                            <span className="text-white font-bold text-2xl">
+                              {member.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('')}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <div className="p-6">
+                        <h3 className="font-bold text-lg">{member.name}</h3>
+                        <p className="text-primary font-medium text-sm mb-3">{member.role}</p>
+                        <p className="text-slate-600 text-sm mb-4">{member.description}</p>
+                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                          <GraduationCap className="h-4 w-4" />
+                          <span>{(member as any).education}</span>
                         </div>
                       </div>
-                    )}
-                    <div className="p-6">
-                      <h3 className="font-bold text-lg">{member.name}</h3>
-                      <p className="text-primary font-medium text-sm mb-3">{member.role}</p>
-                      <p className="text-slate-600 text-sm mb-4">{member.description}</p>
-                      <div className="flex items-center gap-2 text-xs text-slate-500">
-                        <GraduationCap className="h-4 w-4" />
-                        <span>{(member as any).education}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                )
+              })}
             </div>
           </div>
         </section>
