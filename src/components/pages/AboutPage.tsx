@@ -32,13 +32,21 @@ const milestones = [
   { year: '2025', title: 'Capaian', desc: '3 tahun beroperasi di Banyuwangi' },
 ]
 
-const staticTeamImagesByRole: Record<string, string> = {
-  'Ketua': '/team/ketua.jpeg',
-  'Wakil Ketua': '/team/wakil-ketua.jpeg',
-  'Sekretaris': '/team/sekertaris.jpeg',
-  'Bendahara': '/team/bendahara.jpeg',
-  'Wakil Bendahara': '/team/wakil-bendahara.jpeg',
-  'Penasehat': '/team/penasehat.png',
+const staticTeamImagesByRoleNormalized: Record<string, string> = {
+  'ketua': '/team/ketua.jpeg',
+  'wakil ketua': '/team/wakil-ketua.jpeg',
+  'sekretaris': '/team/sekertaris.jpeg',
+  'sekertaris': '/team/sekertaris.jpeg',
+  'bendahara': '/team/bendahara.jpeg',
+  'wakil bendahara': '/team/wakil-bendahara.jpeg',
+  'penasehat': '/team/penasehat.png',
+  'penasahate': '/team/penasehat.png',
+  'penasehate': '/team/penasehat.png',
+}
+
+function getStaticImageForRole(role: string) {
+  const key = role.toLowerCase().trim()
+  return staticTeamImagesByRoleNormalized[key] || ''
 }
 
 const organization = [
@@ -152,7 +160,7 @@ export default function AboutPage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto">
             {teamMembers.map((item, i) => {
-              const staticImage = staticTeamImagesByRole[item.role] || ''
+              const staticImage = getStaticImageForRole(item.role)
               const dynamicImage = item.imageUrl ? toDisplayUrl(item.imageUrl) : ''
               const imageSrc = staticImage || dynamicImage
               return (
@@ -280,7 +288,7 @@ export default function AboutPage() {
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-8">
             {teamMembers.map((member, i) => {
-              const staticImage = staticTeamImagesByRole[member.role] || ''
+              const staticImage = getStaticImageForRole(member.role)
               const dynamicImage = member.imageUrl ? toDisplayUrl(member.imageUrl) : ''
               const imageSrc = staticImage || dynamicImage
               const hasImage = !!imageSrc

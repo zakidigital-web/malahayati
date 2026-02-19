@@ -58,13 +58,21 @@ const milestones = [
   },
 ]
 
-const staticTeamImagesByRole: Record<string, string> = {
-  'Ketua': '/team/ketua.jpeg',
-  'Wakil Ketua': '/team/wakil-ketua.jpeg',
-  'Sekretaris': '/team/sekertaris.jpeg',
-  'Bendahara': '/team/bendahara.jpeg',
-  'Wakil Bendahara': '/team/wakil-bendahara.jpeg',
-  'Penasehat': '/team/penasehat.png',
+const staticTeamImagesByRoleNormalized: Record<string, string> = {
+  'ketua': '/team/ketua.jpeg',
+  'wakil ketua': '/team/wakil-ketua.jpeg',
+  'sekretaris': '/team/sekertaris.jpeg',
+  'sekertaris': '/team/sekertaris.jpeg',
+  'bendahara': '/team/bendahara.jpeg',
+  'wakil bendahara': '/team/wakil-bendahara.jpeg',
+  'penasehat': '/team/penasehat.png',
+  'penasahate': '/team/penasehat.png',
+  'penasehate': '/team/penasehat.png',
+}
+
+function getStaticImageForRole(role: string) {
+  const key = role.toLowerCase().trim()
+  return staticTeamImagesByRoleNormalized[key] || ''
 }
 
 export default async function AboutPage() {
@@ -220,17 +228,30 @@ export default async function AboutPage() {
               </p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {members.map((item: any, i: number) => (
-                <Card key={i} className="border-0 shadow-lg">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Users className="h-5 w-5 text-primary flex-shrink-0" />
-                      <div className="text-primary font-semibold">{item.role}</div>
-                    </div>
-                    <div className="text-slate-900 text-lg font-bold">{item.name}</div>
-                  </CardContent>
-                </Card>
-              ))}
+              {members.map((item: any, i: number) => {
+                const staticImage = getStaticImageForRole(item.role)
+                const dynamicImage = item.imageUrl ? toDisplayUrl(item.imageUrl) : ''
+                const imageSrc = staticImage || dynamicImage
+                return (
+                  <Card key={i} className="border-0 shadow-lg">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3 mb-3">
+                        {imageSrc ? (
+                          <img src={imageSrc} alt={item.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold flex-shrink-0">
+                            {item.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('')}
+                          </div>
+                        )}
+                        <div>
+                          <div className="text-slate-900 text-lg font-bold">{item.name}</div>
+                          <div className="text-primary font-semibold text-sm">{item.role}</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
             </div>
           </div>
         </section>
