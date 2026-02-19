@@ -33,12 +33,12 @@ const milestones = [
 ]
 
 const staticTeamImagesByRole: Record<string, string> = {
-  'Ketua': '/team/ketua.jpg',
-  'Wakil Ketua': '/team/wakil-ketua.jpg',
-  'Sekretaris': '/team/sekretaris.jpg',
-  'Bendahara': '/team/bendahara.jpg',
-  'Penasehat': '/team/penasehat.jpg',
-  'Pengawas': '/team/pengawas.jpg',
+  'Ketua': '/team/ketua.jpeg',
+  'Wakil Ketua': '/team/wakil-ketua.jpeg',
+  'Sekretaris': '/team/sekertaris.jpeg',
+  'Bendahara': '/team/bendahara.jpeg',
+  'Wakil Bendahara': '/team/wakil-bendahara.jpeg',
+  'Penasehat': '/team/penasehat.png',
 }
 
 const organization = [
