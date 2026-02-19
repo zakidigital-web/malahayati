@@ -49,16 +49,6 @@ function getStaticImageForRole(role: string) {
   return staticTeamImagesByRoleNormalized[key] || ''
 }
 
-const organization = [
-  { role: 'Penasehat', name: 'Slamet Yadi' },
-  { role: 'Pengawas', name: 'Heru Setiawan, S.Pd.' },
-  { role: 'Ketua', name: 'Firman Febri Cahyana, S.H., C.MSP' },
-  { role: 'Wakil Ketua', name: 'Moh. Rifki, S.H.' },
-  { role: 'Sekretaris', name: 'Vivi Anjarwati, S.Pd.' },
-  { role: 'Bendahara', name: 'Yasmin Nanda Aditama, S.H.' },
-  { role: 'Wakil Bendahara', name: 'Wiyanda Nindi Aditama, A.Md.' },
-]
-
 export default function AboutPage() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
 
@@ -144,45 +134,6 @@ export default function AboutPage() {
                 <Scale className="h-24 w-24 sm:h-32 sm:w-32 lg:h-40 lg:w-40 text-slate-300" />
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-12 sm:py-16 lg:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <p className="text-amber-600 text-xs sm:text-sm font-medium tracking-widest uppercase mb-3 sm:mb-4">
-              Struktur Organisasi
-            </p>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
-              Yayasan Konsultasi dan Bantuan Hukum Malahayati
-            </h2>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto">
-            {teamMembers.map((item, i) => {
-              const staticImage = getStaticImageForRole(item.role)
-              const dynamicImage = item.imageUrl ? toDisplayUrl(item.imageUrl) : ''
-              const imageSrc = staticImage || dynamicImage
-              return (
-                <Card key={i} className="border-0 shadow-lg">
-                  <CardContent className="p-4 sm:p-6">
-                    <div className="flex items-center gap-3 mb-3">
-                      {imageSrc ? (
-                        <img src={imageSrc} alt={item.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover" />
-                      ) : (
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold">
-                          {item.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
-                        </div>
-                      )}
-                      <div>
-                        <div className="text-slate-900 text-base sm:text-lg font-bold">{item.name}</div>
-                        <div className="text-amber-700 font-semibold text-xs sm:text-sm">{item.role}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )
-            })}
           </div>
         </div>
       </section>
@@ -286,7 +237,7 @@ export default function AboutPage() {
               Profesional Berpengalaman
             </h2>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-10">
             {teamMembers.map((member, i) => {
               const staticImage = getStaticImageForRole(member.role)
               const dynamicImage = member.imageUrl ? toDisplayUrl(member.imageUrl) : ''
@@ -296,15 +247,15 @@ export default function AboutPage() {
                 <Card key={i} className="border-0 bg-slate-50 hover:shadow-lg transition-shadow group text-center">
                   <CardContent className="p-3 sm:p-4 lg:p-6">
                     {hasImage ? (
-                      <img src={imageSrc} alt={member.name} className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full object-cover mx-auto mb-3 sm:mb-4" />
+                      <img src={imageSrc} alt={member.name} className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full object-cover mx-auto mb-4 sm:mb-5" />
                     ) : (
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white text-lg sm:text-xl lg:text-2xl font-bold group-hover:scale-105 transition-transform">
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mx-auto mb-4 sm:mb-5 text-white text-xl sm:text-2xl lg:text-3xl font-bold group-hover:scale-105 transition-transform">
                         {member.name.split(' ').slice(0, 2).map(n => n[0]).join('')}
                       </div>
                     )}
-                    <CardTitle className="text-xs sm:text-sm lg:text-lg mb-1">{member.name}</CardTitle>
-                    <CardDescription className="text-amber-600 font-medium text-[10px] sm:text-xs lg:text-sm mb-2">{member.role}</CardDescription>
-                    <p className="text-slate-600 text-[10px] sm:text-xs lg:text-sm hidden sm:block">{member.description}</p>
+                    <CardTitle className="text-sm sm:text-base lg:text-lg mb-1">{member.name}</CardTitle>
+                    <CardDescription className="text-amber-600 font-medium text-xs sm:text-sm lg:text-base mb-2">{member.role}</CardDescription>
+                    <p className="text-slate-600 text-xs sm:text-sm lg:text-base hidden sm:block">{member.description}</p>
                   </CardContent>
                 </Card>
               )

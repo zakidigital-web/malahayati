@@ -89,19 +89,37 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
+  const buildWhatsappUrl = (data: { namaLengkap: string; nomorWhatsapp: string; email: string; jenisPermasalahan: string; pesan: string }) => {
+    const base = 'https://wa.me/14176308853'
+    const text =
+      `Halo YKBH Malahayati, saya ${data.namaLengkap}.\n\n` +
+      'Saya baru mengisi form konsultasi di website.\n\n' +
+      `Nama: ${data.namaLengkap}\n` +
+      `WhatsApp: ${data.nomorWhatsapp}\n` +
+      `Email: ${data.email}\n` +
+      `Jenis Permasalahan: ${data.jenisPermasalahan || '-'}\n` +
+      `Pesan: ${data.pesan}`
+    return `${base}?text=${encodeURIComponent(text)}`
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     try {
+      const payload = { ...formData }
       const response = await fetch('/api/konsultasi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       })
       const result = await response.json()
       if (result.success) {
         toast({ title: 'Berhasil!', description: 'Pesan Anda telah terkirim. Tim kami akan menghubungi Anda dalam 1x24 jam.' })
+        if (typeof window !== 'undefined') {
+          const waUrl = buildWhatsappUrl(payload)
+          window.open(waUrl, '_blank')
+        }
         setFormData({ namaLengkap: '', nomorWhatsapp: '', email: '', jenisPermasalahan: '', pesan: '' })
       } else {
         throw new Error(result.error)

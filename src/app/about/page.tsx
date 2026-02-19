@@ -218,44 +218,6 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <span className="text-sm font-semibold text-primary tracking-wider uppercase">Struktur Organisasi</span>
-              <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4">Yayasan Konsultasi dan Bantuan Hukum Malahayati</h2>
-              <p className="text-slate-600 max-w-2xl mx-auto text-lg">
-                Susunan pengurus inti yayasan.
-              </p>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {members.map((item: any, i: number) => {
-                const staticImage = getStaticImageForRole(item.role)
-                const dynamicImage = item.imageUrl ? toDisplayUrl(item.imageUrl) : ''
-                const imageSrc = staticImage || dynamicImage
-                return (
-                  <Card key={i} className="border-0 shadow-lg">
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-3 mb-3">
-                        {imageSrc ? (
-                          <img src={imageSrc} alt={item.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
-                        ) : (
-                          <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold flex-shrink-0">
-                            {item.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('')}
-                          </div>
-                        )}
-                        <div>
-                          <div className="text-slate-900 text-lg font-bold">{item.name}</div>
-                          <div className="text-primary font-semibold text-sm">{item.role}</div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </div>
-          </div>
-        </section>
-
         {/* Values */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -298,7 +260,7 @@ export default async function AboutPage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
               {members.map((member, index) => {
                 const role = (member as any).role as string
                 const staticImage = staticTeamImagesByRole[role] || ''
@@ -309,13 +271,13 @@ export default async function AboutPage() {
                   <Card key={index} className="group border-0 shadow-lg overflow-hidden">
                     <CardContent className="p-0">
                       {hasImage ? (
-                        <div className="h-48 bg-slate-100 overflow-hidden">
+                        <div className="h-60 md:h-64 bg-slate-100 overflow-hidden">
                           <img src={imageSrc} alt={member.name} className="w-full h-full object-cover" />
                         </div>
                       ) : (
-                        <div className="h-48 bg-gradient-to-br from-slate-200 to-slate-100 flex items-center justify-center">
-                          <div className="w-24 h-24 rounded-full bg-slate-900 flex items-center justify-center group-hover:bg-primary transition-colors">
-                            <span className="text-white font-bold text-2xl">
+                        <div className="h-60 md:h-64 bg-gradient-to-br from-slate-200 to-slate-100 flex items-center justify-center">
+                          <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-slate-900 flex items-center justify-center group-hover:bg-primary transition-colors">
+                            <span className="text-white font-bold text-3xl">
                               {member.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('')}
                             </span>
                           </div>

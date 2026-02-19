@@ -171,6 +171,19 @@ export default function ServicesPage() {
     pesan: '',
   })
 
+  const buildWhatsappUrl = (data: { namaLengkap: string; nomorWhatsapp: string; email: string; jenisPermasalahan: string; pesan: string }) => {
+    const base = 'https://wa.me/14176308853'
+    const text =
+      `Halo YKBH Malahayati, saya ${data.namaLengkap}.\n\n` +
+      'Saya baru mengisi form konsultasi di website.\n\n' +
+      `Nama: ${data.namaLengkap}\n` +
+      `WhatsApp: ${data.nomorWhatsapp}\n` +
+      `Email: ${data.email}\n` +
+      `Jenis Permasalahan: ${data.jenisPermasalahan || '-'}\n` +
+      `Pesan: ${data.pesan}`
+    return `${base}?text=${encodeURIComponent(text)}`
+  }
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
@@ -180,14 +193,19 @@ export default function ServicesPage() {
     setIsSubmitting(true)
 
     try {
+      const payload = { ...formData }
       const response = await fetch('/api/konsultasi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       })
       const result = await response.json()
       if (result.success) {
         toast({ title: 'Berhasil!', description: 'Permintaan konsultasi Anda telah terkirim.' })
+        if (typeof window !== 'undefined') {
+          const waUrl = buildWhatsappUrl(payload)
+          window.open(waUrl, '_blank')
+        }
         setFormData({ namaLengkap: '', nomorWhatsapp: '', email: '', jenisPermasalahan: '', pesan: '' })
         setIsDialogOpen(false)
       } else {
