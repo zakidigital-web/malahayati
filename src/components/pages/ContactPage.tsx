@@ -12,7 +12,7 @@ import { MapPin, Phone, Mail, Clock, Send, MessageSquare, Facebook, Instagram, L
 
 const contactInfo = [
   { icon: MapPin, title: 'Alamat', lines: ['Perumahan Candra Kirana Asri Blok C1 Kertosari'] },
-  { icon: Phone, title: 'Telepon', lines: ['+62 21 1234 5678', '+62 812 3456 7890'] },
+  { icon: Phone, title: 'Telepon / WhatsApp', lines: ['+1 417 6308853'] },
   { icon: Mail, title: 'Email', lines: ['ykbhmalahayati@gmail.com'] },
   { icon: Clock, title: 'Jam Operasional', lines: ['Senin – Jumat', '08.00 – 17.00 WIB'] },
 ]

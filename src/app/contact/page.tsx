@@ -38,8 +38,8 @@ const contactInfo = [
   {
     icon: Phone,
     title: 'Telepon / WhatsApp',
-    content: ['+62 21 1234 5678', '+62 812 3456 7890 (WhatsApp)'],
-    action: { label: 'Hubungi', href: 'tel:+622112345678' },
+    content: ['+1 417 6308853 (Telepon / WhatsApp)'],
+    action: { label: 'Hubungi', href: 'tel:+14176308853' },
   },
   {
     icon: Mail,
