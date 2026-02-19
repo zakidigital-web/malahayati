@@ -33,7 +33,7 @@ export default function Footer({ onNavigate }: FooterProps) {
               </div>
             </button>
             <p className="text-slate-400 text-sm leading-relaxed mb-6">
-              Memberikan layanan hukum profesional, transparan, dan terpercaya untuk masyarakat Indonesia sejak 2005.
+              Memberikan layanan hukum profesional, transparan, dan terpercaya untuk masyarakat Indonesia sejak 2022.
             </p>
             <div className="flex gap-3">
               <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-amber-500 transition-colors">
@@ -89,7 +89,14 @@ export default function Footer({ onNavigate }: FooterProps) {
             <ul className="space-y-4 text-slate-400">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-amber-400 mt-0.5 flex-shrink-0" />
-                <span>Perumahan Candra Kirana Asri Blok C1 Kertosari</span>
+                <a
+                  href="https://maps.app.goo.gl/vFtzQzE2ig92ACkR6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-amber-400 transition-colors"
+                >
+                  Perumahan Candra Kirana Asri Blok C1 Kertosari
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-amber-400 flex-shrink-0" />

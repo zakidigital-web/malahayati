@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
-import { Plus, Edit, Trash2, Image as ImageIcon, GripVertical } from 'lucide-react'
+import { Plus, Edit, Trash2, Image as ImageIcon, GripVertical, Loader2, X } from 'lucide-react'
 
 interface Slide {
   id: string
@@ -31,6 +31,7 @@ export default function AdminSlidesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingSlide, setEditingSlide] = useState<Slide | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const { toast } = useToast()
 
   const [formData, setFormData] = useState({
@@ -233,20 +234,90 @@ export default function AdminSlidesPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>URL Gambar (opsional)</Label>
-              <Input
-                placeholder="https://..."
-                value={formData.imageUrl}
-                onChange={(e) => setFormData(p => ({ ...p, imageUrl: e.target.value }))}
-                onBlur={(e) => {
-                  const normalized = normalizeImageUrl(e.target.value.trim())
-                  if (normalized !== e.target.value.trim()) {
-                    setFormData(p => ({ ...p, imageUrl: normalized }))
-                    toast({ title: 'URL diubah', description: 'Link Google Drive diubah ke link langsung' })
-                  }
-                }}
-              />
-              <p className="text-xs text-slate-400">Kosongkan untuk menggunakan gradient default. Link Google Drive akan diubah otomatis.</p>
+              <Label>Gambar Hero (opsional)</Label>
+              <div className="flex items-center gap-4">
+                <div className="w-24 h-16 rounded bg-slate-100 flex items-center justify-center overflow-hidden">
+                  {formData.imageUrl ? (
+                    <img src={toDisplayUrl(formData.imageUrl)} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <ImageIcon className="h-6 w-6 text-slate-400" />
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      id="slide-image-upload"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0]
+                        if (!file) return
+                        setUploading(true)
+                        try {
+                          const fd = new FormData()
+                          fd.append('file', file)
+                          fd.append('folder', 'slides')
+                          fd.append('storage', 'blob')
+                          const res = await fetch('/api/upload', { method: 'POST', body: fd })
+                          const json = await res.json()
+                          if (json?.success && json.url) {
+                            const nextUrl = json.provider === 'gdrive' && json.id ? `/api/drive-image?id=${json.id}` : json.url
+                            setFormData(p => ({ ...p, imageUrl: nextUrl }))
+                            toast({ title: 'Gambar terunggah', description: 'Gambar hero berhasil diunggah' })
+                          } else {
+                            throw new Error(json?.error || 'Upload gagal')
+                          }
+                        } catch {
+                          toast({ title: 'Gagal', description: 'Tidak dapat mengunggah gambar', variant: 'destructive' })
+                        } finally {
+                          setUploading(false)
+                          e.currentTarget.value = ''
+                        }
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById('slide-image-upload')?.click()}
+                      disabled={uploading}
+                    >
+                      {uploading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Mengunggah...
+                        </>
+                      ) : (
+                        <>Unggah Gambar</>
+                      )}
+                    </Button>
+                    {formData.imageUrl && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setFormData(p => ({ ...p, imageUrl: '' }))}
+                        title="Hapus gambar"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                  <Input
+                    placeholder="Atau tempel URL gambar manual (opsional)"
+                    value={formData.imageUrl}
+                    onChange={(e) => setFormData(p => ({ ...p, imageUrl: e.target.value }))}
+                    onBlur={(e) => {
+                      const normalized = normalizeImageUrl(e.target.value.trim())
+                      if (normalized !== e.target.value.trim()) {
+                        setFormData(p => ({ ...p, imageUrl: normalized }))
+                        toast({ title: 'URL diubah', description: 'Link Google Drive diubah ke link langsung' })
+                      }
+                    }}
+                  />
+                  <p className="text-xs text-slate-400">
+                    Kosongkan untuk menggunakan background gradient. Upload akan disimpan di Vercel Blob.
+                  </p>
+                </div>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="space-y-2 flex-1">
