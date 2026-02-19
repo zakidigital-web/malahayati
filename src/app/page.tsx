@@ -30,6 +30,22 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [currentPage])
 
+  useEffect(() => {
+    const map: Record<string, string> = {
+      home: '/',
+      about: '/about',
+      services: '/services',
+      articles: '/articles',
+      contact: '/contact',
+    }
+    const path = map[currentPage] ?? '/'
+    fetch('/api/analytics/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path }),
+    }).catch(() => {})
+  }, [currentPage])
+
   const renderPage = () => {
     switch (currentPage) {
       case 'about':

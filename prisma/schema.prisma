@@ -117,3 +117,14 @@ model Session {
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  path      String
+  referrer  String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([path])
+  @@index([createdAt])
+}

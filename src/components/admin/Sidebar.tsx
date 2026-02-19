@@ -16,6 +16,7 @@ import {
   Image,
   Database,
   KeyRound,
+  BarChart2,
 } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,7 @@ const navigation = [
   { name: 'Tim', href: '/admin/team', icon: Users },
   { name: 'Testimoni', href: '/admin/testimonials', icon: Users },
   { name: 'Layanan', href: '/admin/services', icon: Scale },
+  { name: 'Analitik & SEO', href: '/admin/analytics', icon: BarChart2 },
   { name: 'Database', href: '/admin/database', icon: Database },
   { name: 'Pengaturan', href: '/admin/settings', icon: Settings },
 ]
