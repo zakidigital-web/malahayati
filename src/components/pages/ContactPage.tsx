@@ -196,12 +196,25 @@ export default function ContactPage() {
 
       {/* Map */}
       <section className="bg-slate-100">
-        <div className="h-48 sm:h-64 lg:h-80 flex items-center justify-center">
-          <div className="text-center text-slate-400">
-            <MapPin className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-2 sm:mb-3" />
-            <p className="text-sm sm:text-base">Perumahan Candra Kirana Asri Blok C1 Kertosari</p>
-            <p className="text-xs sm:text-sm">(Peta Lokasi)</p>
-          </div>
+        <div className="h-64 sm:h-80 lg:h-[420px]">
+          <iframe
+            src="https://www.google.com/maps?q=Perumahan%20Candra%20Kirana%20Asri%20Blok%20C1%20Kertosari&output=embed"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full h-full border-0"
+            allowFullScreen
+            title="Lokasi Kantor YKBH Malahayati"
+          />
+        </div>
+        <div className="text-center text-slate-500 text-xs sm:text-sm py-3">
+          <a
+            href="https://maps.app.goo.gl/vFtzQzE2ig92ACkR6"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-amber-600 hover:text-amber-500 font-medium"
+          >
+            Buka di Google Maps
+          </a>
         </div>
       </section>
 

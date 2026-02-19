@@ -308,14 +308,28 @@ export default function ContactPage() {
               <h2 className="text-2xl md:text-3xl font-bold mt-2">Temukan Kami</h2>
             </div>
             <Card className="max-w-4xl mx-auto border-0 shadow-lg overflow-hidden">
-              <div className="h-96 bg-gradient-to-br from-slate-200 to-slate-100 flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
-                  <p className="text-slate-600 font-medium">Perumahan Candra Kirana Asri Blok C1 Kertosari</p>
-                  <p className="text-sm text-slate-500 mt-2">Peta lokasi akan ditampilkan di sini</p>
-                </div>
+              <div className="h-96">
+                <iframe
+                  src="https://www.google.com/maps?q=Perumahan%20Candra%20Kirana%20Asri%20Blok%20C1%20Kertosari&output=embed"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full border-0"
+                  allowFullScreen
+                  title="Lokasi Kantor YKBH Malahayati"
+                />
               </div>
             </Card>
+            <div className="text-center text-slate-500 text-sm mt-4">
+              <p className="mb-2">Perumahan Candra Kirana Asri Blok C1 Kertosari</p>
+              <a
+                href="https://maps.app.goo.gl/vFtzQzE2ig92ACkR6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 font-medium"
+              >
+                Buka di Google Maps
+              </a>
+            </div>
           </div>
         </section>
 
