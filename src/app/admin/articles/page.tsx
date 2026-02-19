@@ -163,6 +163,9 @@ export default function AdminArticlesPage() {
         const idParam = u.searchParams.get('id')
         if (idParam) return `https://drive.google.com/uc?export=view&id=${idParam}`
       }
+      const segments = u.pathname.split('/').filter(Boolean)
+      const candidate = segments.find(seg => /^[a-zA-Z0-9_-]{10,}$/.test(seg))
+      if (candidate) return `https://drive.google.com/uc?export=view&id=${candidate}`
       return url
     } catch {
       return url

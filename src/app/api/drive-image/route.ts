@@ -24,6 +24,8 @@ function getIdFromAnything(idOrUrl: string | null) {
       const idParam = u.searchParams.get('id')
       if (idParam) return idParam
     }
+    const candidates = u.pathname.split('/').filter(Boolean).filter(seg => /^[a-zA-Z0-9_-]{10,}$/.test(seg))
+    if (candidates.length) return candidates[candidates.length - 1]
   } catch {
     // not a URL
   }
